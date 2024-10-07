@@ -4,6 +4,7 @@ const roleSchema = new mongoose.Schema({
   role_id: {
     type: String,
     required: [true, "Please enter role id"],
+    unique: true,
   },
 
   name: {

@@ -5,6 +5,7 @@ const permissionSchema = mongoose.Schema({
   permission_id: {
     type: String,
     required: [true, "Please enter permission id"],
+    unique: true,
   },
   name: {
     type: String,

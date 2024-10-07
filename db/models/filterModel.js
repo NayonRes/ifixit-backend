@@ -4,6 +4,7 @@ const filterSchema = mongoose.Schema({
   filter_id: {
     type: String,
     required: [true, "Please enter filter id"],
+    unique: true,
   },
   name: {
     type: String,

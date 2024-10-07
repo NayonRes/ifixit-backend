@@ -22,11 +22,27 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: [validator.isEmail, "Please Enter a valid Email"],
   },
+  number: {
+    type: String,
+    maxLength: [14, "Mobile number cannot exceed 14 characters"],
+    required: [true, "Please enter serviceCustomer name"],
+    trim: true,
+  },
   password: {
     type: String,
     required: [true, "Please Enter Your Password"],
     minLength: [8, "Password should be greater than 8 characters"],
     select: false,
+  },
+
+  designation: {
+    type: String,
+    required: [true, "Please Enter Your Designation"],
+  },
+
+  branch_id: {
+    type: String,
+    required: [true, "Please Enter Branch Id"],
   },
   image: {
     public_id: {

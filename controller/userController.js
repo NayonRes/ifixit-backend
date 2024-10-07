@@ -7,7 +7,14 @@ const imageDelete = require("../utils/imageDelete");
 const sendToken = require("../utils/jwtToken");
 const jwt = require("jsonwebtoken");
 const { main } = require("../utils/TestNodemailerMail");
-
+const getDropdown = catchAsyncError(async (req, res, next) => {
+  const data = await userModel.find({}, "name _id").lean();
+  res.status(200).json({
+    success: true,
+    message: "successful",
+    data: data,
+  });
+});
 const getById = catchAsyncError(async (req, res, next) => {
   console.log("getById");
   let data = await userModel.findById(req.params.id);
@@ -302,6 +309,7 @@ const updateProfile = catchAsyncError(async (req, res, next) => {
 });
 
 module.exports = {
+  getDropdown,
   getById,
   createData,
   getDataWithPagination,

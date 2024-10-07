@@ -1,5 +1,6 @@
 var express = require("express");
 const {
+  getDropdown,
   getById,
   createData,
   getDataWithPagination,
@@ -24,11 +25,9 @@ router.route("/update-profile/:id").put(updateProfile);
 
 // router.route("/category-filter-list").post(getCategoryWiseFilterList);
 
-router
-  .route("/")
-  .get(isAuthenticatedUser, authorizeRoles("per133"), getDataWithPagination);
-
 router.route("/logout").get(logout);
+router.route("/").get(isAuthenticatedUser, getDataWithPagination);
+router.route("/dropdownlist").get(isAuthenticatedUser, getDropdown);
 router
   .route("/:id")
   .get(isAuthenticatedUser, authorizeRoles("per133"), getById);
@@ -39,5 +38,5 @@ router
 router
   .route("/delete/:id")
   .delete(isAuthenticatedUser, authorizeRoles("per136"), deleteData);
-
+// authorizeRoles("per133"),
 module.exports = router;

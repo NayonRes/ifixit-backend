@@ -1,4 +1,4 @@
-const categoryModel = require("../db/models/categoryModel");
+const branchModel = require("../db/models/branchModel");
 const ErrorHander = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const filterModel = require("../db/models/filterModel");
@@ -9,8 +9,8 @@ const getParentDropdown = catchAsyncError(async (req, res, next) => {
     "getParentDropdown===================================================="
   );
 
-  // const data = await categoryModel.find().lean();
-  const data = await categoryModel.find({}, "name category_id").lean();
+  // const data = await branchModel.find().lean();
+  const data = await branchModel.find({}, "name category_id").lean();
 
   console.log("category list----------------", data);
 
@@ -36,9 +36,9 @@ const getDataWithPagination = catchAsyncError(async (req, res, next) => {
   if (req.query.parent_name) {
     query.parent_name = new RegExp(`^${req.query.parent_name}$`, "i");
   }
-  let totalData = await categoryModel.countDocuments(query);
+  let totalData = await branchModel.countDocuments(query);
   console.log("totalData=================================", totalData);
-  const data = await categoryModel.find(query).skip(startIndex).limit(limit);
+  const data = await branchModel.find(query).skip(startIndex).limit(limit);
   console.log("data", data);
   res.status(200).json({
     success: true,
@@ -50,7 +50,7 @@ const getDataWithPagination = catchAsyncError(async (req, res, next) => {
   });
 });
 const getById = catchAsyncError(async (req, res, next) => {
-  let data = await categoryModel.findById(req.params.id);
+  let data = await branchModel.findById(req.params.id);
   if (!data) {
     return res.send({ message: "No data found", status: 404 });
   }
@@ -62,7 +62,7 @@ const createData = catchAsyncError(async (req, res, next) => {
   let newIdserial;
   let newIdNo;
   let newId;
-  const lastDoc = await categoryModel.find().sort({ _id: -1 });
+  const lastDoc = await branchModel.find().sort({ _id: -1 });
   if (lastDoc.length > 0) {
     newIdserial = lastDoc[0].category_id.slice(0, 1);
     newIdNo = parseInt(lastDoc[0].category_id.slice(1)) + 1;
@@ -77,7 +77,7 @@ const createData = catchAsyncError(async (req, res, next) => {
     created_by: decodedData?.user?.email,
   };
 
-  const data = await categoryModel.create(newData);
+  const data = await branchModel.create(newData);
   res.send({ message: "success", status: 201, data: data });
 });
 
@@ -85,7 +85,7 @@ const updateData = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
   const { name } = req.body;
 
-  let data = await categoryModel.findById(req.params.id);
+  let data = await branchModel.findById(req.params.id);
   let oldParentName = data.name;
 
   if (!data) {
@@ -100,13 +100,13 @@ const updateData = catchAsyncError(async (req, res, next) => {
     updated_at: new Date(),
   };
 
-  data = await categoryModel.findByIdAndUpdate(req.params.id, newData, {
+  data = await branchModel.findByIdAndUpdate(req.params.id, newData, {
     new: true,
     runValidators: true,
     useFindAndModified: false,
   });
 
-  const childrenParentUpdate = await categoryModel.updateMany(
+  const childrenParentUpdate = await branchModel.updateMany(
     { parent_name: oldParentName },
     { $set: { parent_name: name } }
   );
@@ -120,7 +120,7 @@ const updateData = catchAsyncError(async (req, res, next) => {
 
 const deleteData = catchAsyncError(async (req, res, next) => {
   console.log("deleteData function is working");
-  let data = await categoryModel.findById(req.params.id);
+  let data = await branchModel.findById(req.params.id);
   console.log("data", data);
   if (!data) {
     console.log("if");
@@ -137,7 +137,7 @@ const deleteData = catchAsyncError(async (req, res, next) => {
 
 async function getAllLeafNodes(data) {
   console.log("getAllLeafNodes", data);
-  let parents = await categoryModel.find({
+  let parents = await branchModel.find({
     name: { $ne: "Primary" },
     parent_name: new RegExp(`^${data.name}$`, "i"),
   });
@@ -158,7 +158,7 @@ async function getAllLeafNodes(data) {
 
 const getLeafCategoryList = catchAsyncError(async (req, res, next) => {
   console.log("getLeafCategoryList");
-  const leafNodes2 = await categoryModel.aggregate([
+  const leafNodes2 = await branchModel.aggregate([
     // { $match: { parent_name: "Mobile" } },
     {
       $lookup: {

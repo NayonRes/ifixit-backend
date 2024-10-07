@@ -44,12 +44,12 @@ const saveData = async () => {
   let totalData = await branchModel.countDocuments();
   console.log("totalData 123456", totalData);
   if (totalData < 1) {
-    const catDoc = new branchModel({
+    const branchDoc = new branchModel({
       branch_id: "b100",
       name: "Primary",
       parent_name: "Primary",
     });
-    await catDoc.save();
+    await branchDoc.save();
   }
 };
 saveData();

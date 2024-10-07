@@ -21,20 +21,10 @@ router
   .route("/category-filter-list")
   .post(isAuthenticatedUser, getCategoryWiseFilterList);
 
-router
-  .route("/")
-  .get(isAuthenticatedUser, authorizeRoles("per103"), getDataWithPagination);
-router
-  .route("/:id")
-  .get(isAuthenticatedUser, authorizeRoles("per103"), getById);
-router
-  .route("/create")
-  .post(isAuthenticatedUser, authorizeRoles("per104"), createData);
-router
-  .route("/update/:id")
-  .put(isAuthenticatedUser, authorizeRoles("per105"), updateData);
-router
-  .route("/delete/:id")
-  .delete(isAuthenticatedUser, authorizeRoles("per106"), deleteData);
+router.route("/").get(isAuthenticatedUser, getDataWithPagination);
+router.route("/:id").get(isAuthenticatedUser, getById);
+router.route("/create").post(isAuthenticatedUser, createData);
+router.route("/update/:id").put(isAuthenticatedUser, updateData);
+router.route("/delete/:id").delete(isAuthenticatedUser, deleteData);
 
 module.exports = router;

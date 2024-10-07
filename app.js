@@ -27,7 +27,6 @@ conntectDB();
 var app = express();
 
 var whitelist = [
-  "https://ifixit-backend.onrender.com",
   "https://digital-shop-admin-panel.vercel.app",
   "http://localhost:3000",
   "http://localhost:3001",

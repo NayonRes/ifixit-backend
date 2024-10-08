@@ -8,7 +8,7 @@ const sendToken = require("../utils/jwtToken");
 const jwt = require("jsonwebtoken");
 const { main } = require("../utils/TestNodemailerMail");
 const getDropdown = catchAsyncError(async (req, res, next) => {
-  const data = await userModel.find({}, "name _id").lean();
+  const data = await userModel.find({}, "name _id designation").lean();
   res.status(200).json({
     success: true,
     message: "successful",
@@ -78,17 +78,15 @@ const getDataWithPagination = catchAsyncError(async (req, res, next) => {
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
   var query = {};
-  if (req.query.orderID) {
-    query.order_id = new RegExp(`^${req.query.orderID}$`, "i");
+  if (req.query.name) {
+    query.name = new RegExp(`^${req.query.name}$`, "i");
   }
-  if (req.query.customerName) {
-    query.customer_name = new RegExp(`^${req.query.customerName}$`, "i");
+
+  if (req.query.email) {
+    query.email = new RegExp(`^${req.query.email}$`, "i");
   }
-  if (req.query.customerEmail) {
-    query.customer_email = new RegExp(`^${req.query.customerEmail}$`, "i");
-  }
-  if (req.query.customerPhone) {
-    query.customer_phone = new RegExp(`^${req.query.customerPhone}$`, "i");
+  if (req.query.email) {
+    query.customer_phone = new RegExp(`^${req.query.email}$`, "i");
   }
   if (req.query.status) {
     query.status = req.query.status;
@@ -118,6 +116,7 @@ const getDataWithPagination = catchAsyncError(async (req, res, next) => {
         user_id: 1,
         name: 1,
         email: 1,
+        designation: 1,
         image: 1,
         status: 1,
         created_by: 1,

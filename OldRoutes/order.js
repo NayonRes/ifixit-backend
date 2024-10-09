@@ -15,7 +15,7 @@ const orderModel = require("../db/models/orderModel");
 
 var router = express.Router();
 
-//Must be maintain the serial of declaring router.route accordimg to less middleware use
+//Must maintain the serial of declaring router.route accordimg to less middleware use
 
 router.route("/category-filter-list").post(getCategoryWiseFilterList);
 router.route("/cancel-product").post(cancelProduct);

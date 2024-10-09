@@ -55,7 +55,7 @@ exports.authorizeRoles = (permission) => {
       console.log("You don't have the permission");
 
       return next(
-        new ErrorHander("You are not allowed to access this resouce", 403)
+        new ErrorHander("You are not allowed to access this resource", 403)
       );
     }
 

@@ -13,7 +13,7 @@ const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 const locationModel = require("../db/models/locationModel");
 var router = express.Router();
 
-//Must be maintain the serial of declaring router.route accordimg to less middleware use
+//Must maintain the serial of declaring router.route accordimg to less middleware use
 router.route("/dropdownlist").get(getParentDropdown);
 
 router

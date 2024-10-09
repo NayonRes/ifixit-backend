@@ -1,42 +1,30 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-var cors = require("cors");
+let createError = require("http-errors");
+let express = require("express");
+const fs = require('fs');
+let path = require("path");
+let cookieParser = require("cookie-parser");
+let logger = require("morgan");
+let cors = require("cors");
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
 require("dotenv").config();
 const conntectDB = require("./db/database");
-// Routes Imports
-var indexRouter = require("./routes/index");
-var userRouter = require("./routes/userRoute");
-var productRouter = require("./routes/productRoute");
-var locationRouter = require("./routes/locationRoute");
-var categoryRouter = require("./routes/categoryRoute");
-var serviceCustomerRouter = require("./routes/serviceCustomerRoute");
-var serviceRouter = require("./routes/serviceRoute");
-var branchRouter = require("./routes/branchRoute");
-var filterRouter = require("./routes/filterRoute");
-var orderRouter = require("./routes/orderRoute");
-var roleRouter = require("./routes/roleRoute");
-var permissionRouter = require("./routes/permissionRoute");
 
 const errorMiddleware = require("./middleware/error");
 // Database connection
 
 conntectDB();
 
-var app = express();
+let app = express();
 
-var whitelist = [
+let whitelist = [
   "https://digital-shop-admin-panel.vercel.app",
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:3002",
   "http://localhost:3003",
 ];
-var corsOptions = {
+let corsOptions = {
   // origin: "https://ifixit-backend.onrender.com",
 
   origin: function (origin, callback) {
@@ -64,18 +52,29 @@ app.use(express.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(fileUpload({ useTempFiles: true }));
-app.use("/", indexRouter);
-app.use("/api/v1/user", userRouter);
-app.use("/api/v1/product", productRouter);
-app.use("/api/v1/location", locationRouter);
-app.use("/api/v1/category", categoryRouter);
-app.use("/api/v1/service", serviceRouter);
-app.use("/api/v1/service-customer", serviceCustomerRouter);
-app.use("/api/v1/branch", branchRouter);
-app.use("/api/v1/filter", filterRouter);
-app.use("/api/v1/order", orderRouter);
-app.use("/api/v1/role", roleRouter);
-app.use("/api/v1/permission", permissionRouter);
+const routesPath = path.join(__dirname, 'routes');
+fs.readdirSync(routesPath).forEach((file) => {
+  const route = require(path.join(routesPath, file));
+  if (typeof route === 'function') {
+    app.use('/', route);
+  } else {
+    console.error(`Route in file ${file} is not a valid route handler.`);
+  }
+});
+
+// Function to list all routes
+function listRoutes(app) {
+  console.log('Registered Routes:');
+  app._router.stack
+      .filter((r) => r.route) // Filter out non-route middleware
+      .forEach((r) => {
+        const methods = Object.keys(r.route.methods).map((method) => method.toUpperCase());
+        console.log(`${methods.join(', ')} ${r.route.path}`);
+      });
+}
+
+// Call the function to list routes
+listRoutes(app);
 
 // catch 404 and forward to error handler
 app.use(errorMiddleware);

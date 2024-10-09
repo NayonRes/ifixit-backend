@@ -19,7 +19,7 @@ const getDataWithPagination = catchAsyncError(async (req, res, next) => {
   const limit = parseInt(req.query.limit) || 10;
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
-  var query = {};
+  let query = {};
   if (req.query.orderID) {
     query.order_id = new RegExp(`^${req.query.orderID}$`, "i");
   }

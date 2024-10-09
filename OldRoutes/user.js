@@ -10,11 +10,11 @@ const {
   updatePassword,
   updateProfile,
 } = require("../controller/userController");
-var router = express.Router();
+let router = express.Router();
 const userModel = require("../db/models/userModel");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 
-//Must be maintain the serial of declaring router.route accordimg to less middleware use
+//Must maintain the serial of declaring router.route according to less middleware use
 
 router.route("/login").post(loginUser);
 router.route("/update-password").post(updatePassword);

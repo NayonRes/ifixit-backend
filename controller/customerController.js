@@ -1,4 +1,4 @@
-const serviceModel = require("../db/models/serviceModel");
+const serviceCustomerModel = require("../db/models/serviceCustomerModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");
@@ -19,9 +19,12 @@ const index = catchAsyncError(async (req, res, next) => {
   if (req.query.parent_name) {
     query.parent_name = new RegExp(`^${req.query.parent_name}$`, "i");
   }
-  let totalData = await serviceModel.countDocuments(query);
+  let totalData = await serviceCustomerModel.countDocuments(query);
   console.log("totalData=================================", totalData);
-  const data = await serviceModel.find(query).skip(startIndex).limit(limit);
+  const data = await serviceCustomerModel
+    .find(query)
+    .skip(startIndex)
+    .limit(limit);
   console.log("data", data);
   res.status(200).json({
     success: true,
@@ -33,7 +36,7 @@ const index = catchAsyncError(async (req, res, next) => {
   });
 });
 const show = catchAsyncError(async (req, res, next) => {
-  let data = await serviceModel.findById(req.params.id);
+  let data = await serviceCustomerModel.findById(req.params.id);
   if (!data) {
     return res.send({ message: "No data found", status: 404 });
   }
@@ -45,22 +48,22 @@ const store = catchAsyncError(async (req, res, next) => {
   let newIdserial;
   let newIdNo;
   let newId;
-  const lastDoc = await serviceModel.find().sort({ _id: -1 });
+  const lastDoc = await serviceCustomerModel.find().sort({ _id: -1 });
   if (lastDoc.length > 0) {
-    newIdserial = lastDoc[0].service_id.slice(0, 2);
-    newIdNo = parseInt(lastDoc[0].service_id.slice(2)) + 1;
+    newIdserial = lastDoc[0].serviceCustomer_id.slice(0, 2);
+    newIdNo = parseInt(lastDoc[0].serviceCustomer_id.slice(2)) + 1;
     newId = newIdserial.concat(newIdNo);
   } else {
-    newId = "sc100";
+    newId = "s100";
   }
   let decodedData = jwt.verify(token, process.env.JWT_SECRET);
   let newData = {
     ...req.body,
-    service_id: newId,
+    serviceCustomer_id: newId,
     created_by: decodedData?.user?.email,
   };
 
-  const data = await serviceModel.create(newData);
+  const data = await serviceCustomerModel.create(newData);
   res.send({ message: "success", status: 201, data: data });
 });
 
@@ -68,7 +71,7 @@ const update = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
   const { name } = req.body;
 
-  let data = await serviceModel.findById(req.params.id);
+  let data = await serviceCustomerModel.findById(req.params.id);
   let oldParentName = data.name;
 
   if (!data) {
@@ -83,13 +86,13 @@ const update = catchAsyncError(async (req, res, next) => {
     updated_at: new Date(),
   };
 
-  data = await serviceModel.findByIdAndUpdate(req.params.id, newData, {
+  data = await serviceCustomerModel.findByIdAndUpdate(req.params.id, newData, {
     new: true,
     runValidators: true,
     useFindAndModified: false,
   });
 
-  const childrenParentUpdate = await serviceModel.updateMany(
+  const childrenParentUpdate = await serviceCustomerModel.updateMany(
     { parent_name: oldParentName },
     { $set: { parent_name: name } }
   );
@@ -103,7 +106,7 @@ const update = catchAsyncError(async (req, res, next) => {
 
 const remove = catchAsyncError(async (req, res, next) => {
   console.log("deleteData function is working");
-  let data = await serviceModel.findById(req.params.id);
+  let data = await serviceCustomerModel.findById(req.params.id);
   console.log("data", data);
   if (!data) {
     console.log("if");

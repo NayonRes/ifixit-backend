@@ -1,17 +1,9 @@
 const locationModel = require("../db/models/locationModel");
-const ErrorHander = require("../utils/errorHandler");
+const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");
 
-const getParentDropdown = catchAsyncError(async (req, res, next) => {
-  const data = await locationModel.find({}, "name location_id").lean();
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: data,
-  });
-});
-const getDataWithPagination = catchAsyncError(async (req, res, next) => {
+const index = catchAsyncError(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   console.log("===========req.query.page", req.query.page);
   const limit = parseInt(req.query.limit) || 10;
@@ -40,7 +32,8 @@ const getDataWithPagination = catchAsyncError(async (req, res, next) => {
     limit: limit,
   });
 });
-const getById = catchAsyncError(async (req, res, next) => {
+
+const show = catchAsyncError(async (req, res, next) => {
   let data = await locationModel.findById(req.params.id);
   if (!data) {
     return res.send({ message: "No data found", status: 404 });
@@ -48,7 +41,7 @@ const getById = catchAsyncError(async (req, res, next) => {
   res.send({ message: "success", status: 200, data: data });
 });
 
-const createData = catchAsyncError(async (req, res, next) => {
+const store = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
   let newIdserial;
   let newIdNo;
@@ -72,14 +65,14 @@ const createData = catchAsyncError(async (req, res, next) => {
   res.send({ message: "success", status: 201, data: data });
 });
 
-const updateData = catchAsyncError(async (req, res, next) => {
+const update = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
   const { name } = req.body;
   let data = await locationModel.findById(req.params.id);
   let oldParentName = data.name;
   if (!data) {
     console.log("if");
-    return next(new ErrorHander("No data found", 404));
+    return next(new ErrorHandler("No data found", 404));
   }
   let decodedData = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -105,13 +98,13 @@ const updateData = catchAsyncError(async (req, res, next) => {
   });
 });
 
-const deleteData = catchAsyncError(async (req, res, next) => {
+const remove = catchAsyncError(async (req, res, next) => {
   console.log("deleteData function is working");
   let data = await locationModel.findById(req.params.id);
   console.log("data", data);
   if (!data) {
     console.log("if");
-    return next(new ErrorHander("No data found", 404));
+    return next(new ErrorHandler("No data found", 404));
   }
 
   await data.remove();
@@ -122,10 +115,9 @@ const deleteData = catchAsyncError(async (req, res, next) => {
   });
 });
 module.exports = {
-  getParentDropdown,
-  getDataWithPagination,
-  getById,
-  createData,
-  updateData,
-  deleteData,
+  index,
+  show,
+  store,
+  update,
+  remove
 };

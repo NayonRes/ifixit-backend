@@ -1,47 +1,9 @@
 const ErrorHander = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const roleModel = require("../db/models/roleModel");
-const productModel = require("../db/models/productModel");
 const jwt = require("jsonwebtoken");
 
-const getDropdown = catchAsyncError(async (req, res, next) => {
-  const data = await roleModel.find({}, "name role_id").lean();
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: data,
-  });
-});
-const getLeafRoleList = catchAsyncError(async (req, res, next) => {
-  console.log("getLeafCategoryList");
-  const leafNodes2 = await categoryModel.aggregate([
-    // { $match: { parent_name: "Mobile" } },
-    {
-      $lookup: {
-        from: "categories",
-        localField: "name",
-        foreignField: "parent_name",
-        as: "children",
-      },
-    },
-    {
-      $addFields: {
-        isLeaf: { $eq: ["$children", []] },
-      },
-    },
-    { $match: { isLeaf: true } },
-    { $project: { _id: 1, name: 1, parent_name: 1, category_id: 1 } },
-  ]);
-
-  // res.json(leafNodes2);
-
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: leafNodes2,
-  });
-});
-const getDataWithPagination = catchAsyncError(async (req, res, next) => {
+const index = catchAsyncError(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   console.log("===========req.query.page", req.query.page);
   const limit = parseInt(req.query.limit) || 10;
@@ -74,7 +36,8 @@ const getDataWithPagination = catchAsyncError(async (req, res, next) => {
     limit: limit,
   });
 });
-const getById = catchAsyncError(async (req, res, next) => {
+
+const show = catchAsyncError(async (req, res, next) => {
   let data = await roleModel.findById(req.params.id);
   if (!data) {
     return next(new ErrorHander("No data found", 404));
@@ -85,7 +48,8 @@ const getById = catchAsyncError(async (req, res, next) => {
     data: data,
   });
 });
-const createData = catchAsyncError(async (req, res, next) => {
+
+const store = catchAsyncError(async (req, res, next) => {
   console.log("createData");
   const { token } = req.cookies;
   let newIdserial;
@@ -117,7 +81,7 @@ const createData = catchAsyncError(async (req, res, next) => {
 });
 // this function is for managing cancel or update any product quantity
 
-const updateData = catchAsyncError(async (req, res, next) => {
+const update = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
   let data = await roleModel.findById(req.params.id);
 
@@ -147,7 +111,7 @@ const updateData = catchAsyncError(async (req, res, next) => {
   });
 });
 
-const deleteData = catchAsyncError(async (req, res, next) => {
+const remove = catchAsyncError(async (req, res, next) => {
   console.log("deleteData function is working");
   let data = await roleModel.findById(req.params.id);
   console.log("data", data);
@@ -165,10 +129,9 @@ const deleteData = catchAsyncError(async (req, res, next) => {
 });
 
 module.exports = {
-  getDropdown,
-  getDataWithPagination,
-  getById,
-  createData,
-  updateData,
-  deleteData,
+  index,
+  show,
+  store,
+  update,
+  remove
 };

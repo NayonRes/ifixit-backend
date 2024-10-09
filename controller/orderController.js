@@ -1,19 +1,10 @@
-const categoryModel = require("../db/models/categoryModel");
-const ErrorHander = require("../utils/errorHandler");
+const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const orderModel = require("../db/models/orderModel");
 const productModel = require("../db/models/productModel");
 const jwt = require("jsonwebtoken");
 
-const getParentDropdown = catchAsyncError(async (req, res, next) => {
-  const data = await categoryModel.find({}, "name category_id").lean();
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: data,
-  });
-});
-const getDataWithPagination = catchAsyncError(async (req, res, next) => {
+const index = catchAsyncError(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   console.log("===========req.query.page", req.query.page);
   const limit = parseInt(req.query.limit) || 10;
@@ -53,10 +44,11 @@ const getDataWithPagination = catchAsyncError(async (req, res, next) => {
     limit: limit,
   });
 });
-const getById = catchAsyncError(async (req, res, next) => {
+
+const show = catchAsyncError(async (req, res, next) => {
   let data = await orderModel.findById(req.params.id);
   if (!data) {
-    return next(new ErrorHander("No data found", 404));
+    return next(new ErrorHandler("No data found", 404));
   }
 
   res.status(200).json({
@@ -203,11 +195,11 @@ const updateOrderProduct = async (orderList, res, next) => {
     }
   }
   // else {
-  //   next(new ErrorHander("Product stock update problem", 404));
+  //   next(new ErrorHandler("Product stock update problem", 404));
   // }
 };
 
-const createData = catchAsyncError(async (req, res, next) => {
+const store = catchAsyncError(async (req, res, next) => {
   // checking product stock in every order item ----------------------------
   const { token } = req.cookies;
   let productHasNoQuantity = [];
@@ -318,7 +310,7 @@ const createData = catchAsyncError(async (req, res, next) => {
   res.status(201).json({ message: "success", data: data });
 });
 
-const updateData = catchAsyncError(async (req, res, next) => {
+const update = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
   let data = await orderModel.findById(req.params.id);
   console.log(
@@ -327,7 +319,7 @@ const updateData = catchAsyncError(async (req, res, next) => {
   );
   if (!data) {
     console.log("if");
-    return next(new ErrorHander("No data found", 404));
+    return next(new ErrorHandler("No data found", 404));
   }
 
   let decreasedQuantityProducts = [];
@@ -489,31 +481,14 @@ const updateData = catchAsyncError(async (req, res, next) => {
     data: data,
   });
 });
-const cancelProduct = catchAsyncError(async (req, res, next) => {
-  console.log("req.body", req.body);
 
-  let data = await orderModel.updateOne(
-    { _id: req.body.id },
-    { $pull: { product_details: { product_id: req.body.productId } } }
-    // { new: true }
-  );
-
-  console.log("data", data);
-
-  res.status(200).json({
-    success: true,
-    message: "Update successfully",
-    data: data,
-  });
-});
-
-const deleteData = catchAsyncError(async (req, res, next) => {
+const remove = catchAsyncError(async (req, res, next) => {
   console.log("deleteData function is working");
   let data = await orderModel.findById(req.params.id);
   console.log("data", data);
   if (!data) {
     console.log("if");
-    return next(new ErrorHander("No data found", 404));
+    return next(new ErrorHandler("No data found", 404));
   }
 
   await data.remove();
@@ -524,112 +499,11 @@ const deleteData = catchAsyncError(async (req, res, next) => {
   });
 });
 
-async function getAllLeafNodes(data) {
-  console.log("getAllLeafNodes", data);
-  let parents = await categoryModel.find({
-    name: { $ne: "Primary" },
-    parent_name: new RegExp(`^${data.name}$`, "i"),
-  });
-  // parents = parents.filter((e) => e.name !== "Primary");
-  console.log("11111111111", parents);
-  if (parents.length < 1) {
-    // If the parent has no children, it is a leaf node.
-    console.log("data._id", data._id);
-    return [data];
-  }
 
-  const childPromises = parents.map((item) => getAllLeafNodes(item));
-  const childNodes = await Promise.all(childPromises);
-
-  // Use the spread operator to flatten the array of arrays into a single array.
-  return [...childNodes.flat()];
-}
-
-const getLeafCategoryList = catchAsyncError(async (req, res, next) => {
-  console.log("getLeafCategoryList");
-  const leafNodes2 = await categoryModel.aggregate([
-    // { $match: { parent_name: "Mobile" } },
-    {
-      $lookup: {
-        from: "categories",
-        localField: "name",
-        foreignField: "parent_name",
-        as: "children",
-      },
-    },
-    {
-      $addFields: {
-        isLeaf: { $eq: ["$children", []] },
-      },
-    },
-    { $match: { isLeaf: true } },
-    { $project: { _id: 1, name: 1, parent_name: 1, category_id: 1 } },
-  ]);
-
-  // res.json(leafNodes2);
-
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: leafNodes2,
-  });
-});
-const getCategoryWiseFilterList = catchAsyncError(async (req, res, next) => {
-  console.log("req.body 3213231", req.body);
-
-  const leafNodes = await getAllLeafNodes(req.body);
-
-  console.log("leafNodes", leafNodes.toString());
-
-  const stringIds = [];
-  leafNodes.map((res) => {
-    stringIds.push(res.category_id.toString());
-  });
-
-  console.log("stringIds", stringIds);
-  // const stringIds = leafNodes.map((id) => id.toString());
-  console.log(stringIds);
-  const data = await orderModel
-    .find(
-      {
-        category_id: {
-          $in: stringIds,
-        },
-      },
-      "name parent_name filter_id"
-    )
-    .lean()
-    .sort({ parent_name: 1 });
-
-  let result = [];
-
-  data.map((p) => {
-    // filterValues.some((e) => e.filter_name === p.parent_name);
-    if (!result.some((e) => e.filter_name === p.parent_name)) {
-      let filterDataByParentName = data.filter(
-        (res) => res.parent_name === p.parent_name
-      );
-      result.push({
-        filter_name: p.parent_name,
-        filter_values: filterDataByParentName,
-      });
-    }
-  });
-  console.log("result", result);
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: result,
-  });
-});
 module.exports = {
-  getParentDropdown,
-  getLeafCategoryList,
-  getDataWithPagination,
-  getById,
-  createData,
-  updateData,
-  deleteData,
-  getCategoryWiseFilterList,
-  cancelProduct,
+  index,
+  show,
+  store,
+  update,
+  remove
 };

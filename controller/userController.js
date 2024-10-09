@@ -1,74 +1,15 @@
 const userModel = require("../db/models/userModel");
 const roleModel = require("../db/models/roleModel");
-const ErrorHander = require("../utils/errorHandler");
+const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const imageUpload = require("../utils/imageUpload");
 const imageDelete = require("../utils/imageDelete");
 const sendToken = require("../utils/jwtToken");
 const jwt = require("jsonwebtoken");
 const { main } = require("../utils/TestNodemailerMail");
-const getDropdown = catchAsyncError(async (req, res, next) => {
-  const data = await userModel.find({}, "name _id designation").lean();
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: data,
-  });
-});
-const getById = catchAsyncError(async (req, res, next) => {
-  console.log("getById");
-  let data = await userModel.findById(req.params.id);
-  if (!data) {
-    return next(new ErrorHander("No data found", 404));
-  }
-  res.status(200).json({
-    success: true,
-    message: "success",
-    data: data,
-  });
-});
-const createData = catchAsyncError(async (req, res, next) => {
-  // console.log("req.files", req.files);
-  // console.log("req.body", req.body);
-  const { token } = req.cookies;
-  const { email } = req.body;
-  const user = await userModel.findOne({ email });
+const categoryModel = require("../db/models/categoryModel");
 
-  if (user) {
-    return next(new ErrorHander("Email already exists", 401));
-  }
-
-  let imageData = [];
-  if (req.files) {
-    imageData = await imageUpload(req.files.image, "users", next);
-  }
-  console.log("imageData", imageData);
-  let newIdserial;
-  let newIdNo;
-  let newId;
-  const lastDoc = await userModel.find().sort({ _id: -1 });
-
-  console.log("lastDoc", lastDoc);
-
-  if (lastDoc.length > 0) {
-    newIdserial = lastDoc[0].user_id.slice(0, 1);
-    newIdNo = parseInt(lastDoc[0].user_id.slice(1)) + 1;
-    newId = newIdserial.concat(newIdNo);
-  } else {
-    newId = "u100";
-  }
-  let decodedData = jwt.verify(token, process.env.JWT_SECRET);
-  let newData = {
-    ...req.body,
-    image: imageData[0],
-    user_id: newId,
-    created_by: decodedData?.user?.email,
-  };
-  console.log("newData --------------------------1212", newData);
-  const data = await userModel.create(newData);
-  res.send({ message: "success", status: 201, data: data });
-});
-const getDataWithPagination = catchAsyncError(async (req, res, next) => {
+const index = catchAsyncError(async (req, res, next) => {
   console.log("getDataWithPagination");
 
   console.log("req.cookies ---------------------------------", req.cookies);
@@ -145,25 +86,67 @@ const getDataWithPagination = catchAsyncError(async (req, res, next) => {
   });
 });
 
+const store = catchAsyncError(async (req, res, next) => {
+  // console.log("req.files", req.files);
+  // console.log("req.body", req.body);
+  const { token } = req.cookies;
+  const { email } = req.body;
+  const user = await userModel.findOne({ email });
+
+  if (user) {
+    return next(new ErrorHandler("Email already exists", 401));
+  }
+
+  let imageData = [];
+  if (req.files) {
+    imageData = await imageUpload(req.files.image, "users", next);
+  }
+  console.log("imageData", imageData);
+  let newIdserial;
+  let newIdNo;
+  let newId;
+  const lastDoc = await userModel.find().sort({ _id: -1 });
+
+  console.log("lastDoc", lastDoc);
+
+  if (lastDoc.length > 0) {
+    newIdserial = lastDoc[0].user_id.slice(0, 1);
+    newIdNo = parseInt(lastDoc[0].user_id.slice(1)) + 1;
+    newId = newIdserial.concat(newIdNo);
+  } else {
+    newId = "u100";
+  }
+  let decodedData = jwt.verify(token, process.env.JWT_SECRET);
+  let newData = {
+    ...req.body,
+    image: imageData[0],
+    user_id: newId,
+    created_by: decodedData?.user?.email,
+  };
+  console.log("newData --------------------------1212", newData);
+  const data = await userModel.create(newData);
+  res.send({ message: "success", status: 201, data: data });
+});
+
 const loginUser = catchAsyncError(async (req, res, next) => {
   const { email, password } = req.body;
 
   // checking if user has given password and email both
 
   if (!email || !password) {
-    return next(new ErrorHander("Please Enter Email & Password", 400));
+    return next(new ErrorHandler("Please Enter Email & Password", 400));
   }
 
   const user = await userModel.findOne({ email }).select("+password");
 
   if (!user) {
-    return next(new ErrorHander("Invalid email or password", 401));
+    return next(new ErrorHandler("Invalid email or password", 401));
   }
 
   const isPasswordMatched = await user.comparePassword(password);
   console.log("isPasswordMatched", isPasswordMatched);
   if (!isPasswordMatched) {
-    return next(new ErrorHander("Invalid email or password", 401));
+    return next(new ErrorHandler("Invalid email or password", 401));
   }
   let roleAndPermission = {};
   if (user.role_id) {
@@ -187,14 +170,14 @@ const logout = catchAsyncError(async (req, res, next) => {
     message: "Logged Out",
   });
 });
-const deleteData = catchAsyncError(async (req, res, next) => {
+const remove = catchAsyncError(async (req, res, next) => {
   console.log("deleteData function is working");
   let data = await userModel.findById(req.params.id);
   console.log("data====================", data.image.public_id);
 
   if (!data) {
     console.log("if");
-    return next(new ErrorHander("No data found", 404));
+    return next(new ErrorHandler("No data found", 404));
   }
 
   // if (data.images.length > 0) {
@@ -222,11 +205,11 @@ const updatePassword = catchAsyncError(async (req, res, next) => {
   const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
 
   if (!isPasswordMatched) {
-    return next(new ErrorHander("Old password is incorrect", 400));
+    return next(new ErrorHandler("Old password is incorrect", 400));
   }
 
   if (req.body.newPassword !== req.body.confirmPassword) {
-    return next(new ErrorHander("password does not match", 400));
+    return next(new ErrorHandler("password does not match", 400));
   }
 
   user.password = req.body.newPassword;
@@ -236,15 +219,24 @@ const updatePassword = catchAsyncError(async (req, res, next) => {
   sendToken(user, 200, res);
 });
 
+const show = catchAsyncError(async (req, res, next) => {
+  let data = await userModel.findById(req.params.id);
+  if (!data) {
+    return res.send({ message: "No data found", status: 404 });
+  }
+  res.send({ message: "success", status: 200, data: data });
+});
+
+
 // update User Profile
-const updateProfile = catchAsyncError(async (req, res, next) => {
+const update = catchAsyncError(async (req, res, next) => {
   console.log("req.params.id =======================", req.params.id);
   const { token } = req.cookies;
 
   const userData = await userModel.findById(req.params.id);
 
   if (!userData) {
-    return next(new ErrorHander("No data found", 404));
+    return next(new ErrorHandler("No data found", 404));
   }
   let decodedData = jwt.verify(token, process.env.JWT_SECRET);
   const newUserData = {
@@ -308,13 +300,9 @@ const updateProfile = catchAsyncError(async (req, res, next) => {
 });
 
 module.exports = {
-  getDropdown,
-  getById,
-  createData,
-  getDataWithPagination,
-  deleteData,
-  loginUser,
-  logout,
-  updatePassword,
-  updateProfile,
+  index,
+  show,
+  store,
+  update,
+  remove
 };

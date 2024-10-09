@@ -1,21 +1,21 @@
 const express = require("express");
 const {
-  getDataWithPagination,
-  getById,
-  createData,
-  updateData,
-  deleteData,
+  index,
+  show,
+  store,
+  update,
+  remove
 } = require("../controller/branchController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 
 let router = express.Router();
 
 router.route("/branch")
-    .get(isAuthenticatedUser, getDataWithPagination)
-    .post(isAuthenticatedUser, createData);
+    .get(index)
+    .post(store);
 router.route("/branch/:id")
-    .get(isAuthenticatedUser, getById)
-    .put(isAuthenticatedUser, updateData)
-    .delete(isAuthenticatedUser, deleteData);
+    .get(show)
+    .put(update)
+    .delete(remove);
 
 module.exports = router;

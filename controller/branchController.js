@@ -1,26 +1,10 @@
 const branchModel = require("../db/models/branchModel");
 const ErrorHander = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
-const filterModel = require("../db/models/filterModel");
 const jwt = require("jsonwebtoken");
+const responseBuilder = require("../builder/responseBuilder");
 
-const getParentDropdown = catchAsyncError(async (req, res, next) => {
-  console.log(
-    "getParentDropdown===================================================="
-  );
-
-  // const data = await branchModel.find().lean();
-  const data = await branchModel.find({}, "name category_id").lean();
-
-  console.log("category list----------------", data);
-
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: data,
-  });
-});
-const getDataWithPagination = catchAsyncError(async (req, res, next) => {
+const index = catchAsyncError(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   console.log("===========req.query.page", req.query.page);
   const limit = parseInt(req.query.limit) || 10;
@@ -40,16 +24,13 @@ const getDataWithPagination = catchAsyncError(async (req, res, next) => {
   console.log("totalData=================================", totalData);
   const data = await branchModel.find(query).skip(startIndex).limit(limit);
   console.log("data", data);
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: data,
+  responseBuilder(res, 200, 'Success', data, {
     totalData: totalData,
     pageNo: page,
-    limit: limit,
-  });
+    limit: limit
+  })
 });
-const getById = catchAsyncError(async (req, res, next) => {
+const show = catchAsyncError(async (req, res, next) => {
   let data = await branchModel.findById(req.params.id);
   if (!data) {
     return res.send({ message: "No data found", status: 404 });
@@ -57,7 +38,7 @@ const getById = catchAsyncError(async (req, res, next) => {
   res.send({ message: "success", status: 200, data: data });
 });
 
-const createData = catchAsyncError(async (req, res, next) => {
+const store = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
   let newIdserial;
   let newIdNo;
@@ -81,7 +62,7 @@ const createData = catchAsyncError(async (req, res, next) => {
   res.send({ message: "success", status: 201, data: data });
 });
 
-const updateData = catchAsyncError(async (req, res, next) => {
+const update = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
   const { name } = req.body;
 
@@ -118,7 +99,7 @@ const updateData = catchAsyncError(async (req, res, next) => {
   });
 });
 
-const deleteData = catchAsyncError(async (req, res, next) => {
+const remove = catchAsyncError(async (req, res, next) => {
   console.log("deleteData function is working");
   let data = await branchModel.findById(req.params.id);
   console.log("data", data);
@@ -135,111 +116,10 @@ const deleteData = catchAsyncError(async (req, res, next) => {
   });
 });
 
-async function getAllLeafNodes(data) {
-  console.log("getAllLeafNodes", data);
-  let parents = await branchModel.find({
-    name: { $ne: "Primary" },
-    parent_name: new RegExp(`^${data.name}$`, "i"),
-  });
-  // parents = parents.filter((e) => e.name !== "Primary");
-  console.log("11111111111", parents);
-  if (parents.length < 1) {
-    // If the parent has no children, it is a leaf node.
-    console.log("data._id", data._id);
-    return [data];
-  }
-
-  const childPromises = parents.map((item) => getAllLeafNodes(item));
-  const childNodes = await Promise.all(childPromises);
-
-  // Use the spread operator to flatten the array of arrays into a single array.
-  return [...childNodes.flat()];
-}
-
-const getLeafCategoryList = catchAsyncError(async (req, res, next) => {
-  console.log("getLeafCategoryList");
-  const leafNodes2 = await branchModel.aggregate([
-    // { $match: { parent_name: "Mobile" } },
-    {
-      $lookup: {
-        from: "categories",
-        localField: "name",
-        foreignField: "parent_name",
-        as: "children",
-      },
-    },
-    {
-      $addFields: {
-        isLeaf: { $eq: ["$children", []] },
-      },
-    },
-    { $match: { isLeaf: true } },
-    { $project: { _id: 1, name: 1, parent_name: 1, category_id: 1 } },
-  ]);
-
-  // res.json(leafNodes2);
-
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: leafNodes2,
-  });
-});
-const getCategoryWiseFilterList = catchAsyncError(async (req, res, next) => {
-  console.log("req.body 3213231", req.body);
-
-  const leafNodes = await getAllLeafNodes(req.body);
-
-  console.log("leafNodes", leafNodes.toString());
-
-  const stringIds = [];
-  leafNodes.map((res) => {
-    stringIds.push(res.category_id.toString());
-  });
-
-  console.log("stringIds", stringIds);
-  // const stringIds = leafNodes.map((id) => id.toString());
-  console.log(stringIds);
-  const data = await filterModel
-    .find(
-      {
-        category_id: {
-          $in: stringIds,
-        },
-      },
-      "name parent_name filter_id"
-    )
-    .lean()
-    .sort({ parent_name: 1 });
-
-  let result = [];
-
-  data.map((p) => {
-    // filterValues.some((e) => e.filter_name === p.parent_name);
-    if (!result.some((e) => e.filter_name === p.parent_name)) {
-      let filterDataByParentName = data.filter(
-        (res) => res.parent_name === p.parent_name
-      );
-      result.push({
-        filter_name: p.parent_name,
-        filter_values: filterDataByParentName,
-      });
-    }
-  });
-  console.log("result", result);
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: result,
-  });
-});
 module.exports = {
-  getParentDropdown,
-  getLeafCategoryList,
-  getDataWithPagination,
-  getById,
-  createData,
-  updateData,
-  deleteData,
-  getCategoryWiseFilterList,
+  index,
+  show,
+  store,
+  update,
+  remove
 };

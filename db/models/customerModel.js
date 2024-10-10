@@ -66,9 +66,9 @@ const serviceCustomerSchema = mongoose.Schema({
   updated_at: { type: Date, default: Date.now },
 });
 
-const serviceCustomerModel = mongoose.model(
+const customerModel = mongoose.model(
   "serviceCustomer",
   serviceCustomerSchema
 );
 
-module.exports = serviceCustomerModel;
+module.exports = customerModel;

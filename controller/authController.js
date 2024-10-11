@@ -62,7 +62,7 @@ const register = catchAsyncError(async (req, res, next) => {
     res.send({ message: "success", status: 201, data: data });
 });
 
-const login = catchAsyncError(async (req, res, next) => {
+const token = catchAsyncError(async (req, res, next) => {
     const { email, password } = req.body;
 
     // checking if user has given password and email both
@@ -198,7 +198,7 @@ const updateProfile = catchAsyncError(async (req, res, next) => {
 });
 
 module.exports = {
-    login,
+    token,
     logout,
     register,
     updatePassword,

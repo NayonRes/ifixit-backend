@@ -37,7 +37,6 @@ let corsOptions = {
   credentials: true,
   optionSuccessStatus: 200,
 };
-// app.use(cors());
 
 app.use(cors(corsOptions));
 // view engine setup

@@ -10,11 +10,11 @@ const {
 const router = express.Router();
 const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
 
-router.route("/category")
+router.route("/user")
     .get(index)
     .post(store);
 
-router.route("/category/:id")
+router.route("/user/:id")
     .get(show)
     .put(update)
     .delete(remove);

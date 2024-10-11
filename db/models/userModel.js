@@ -7,8 +7,7 @@ const crypto = require("crypto");
 const userSchema = new mongoose.Schema({
   user_id: {
     type: String,
-    required: [true, "Please enter user id"],
-    unique: true,
+    unique: true
   },
   name: {
     type: String,
@@ -25,14 +24,14 @@ const userSchema = new mongoose.Schema({
   number: {
     type: String,
     maxLength: [14, "Mobile number cannot exceed 14 characters"],
-    required: [true, "Please enter serviceCustomer name"],
+    required: [true, "Please enter mobile number"],
     trim: true,
   },
   password: {
     type: String,
     required: [true, "Please Enter Your Password"],
     minLength: [8, "Password should be greater than 8 characters"],
-    select: false,
+    // select: false,
   },
 
   designation: {
@@ -70,7 +69,7 @@ const userSchema = new mongoose.Schema({
   created_by: {
     type: String,
     trim: true,
-    default: "mahnayon@gmail.com",
+    default: null,
   },
   created_at: { type: Date, default: Date.now },
   updated_by: {
@@ -134,6 +133,9 @@ let userData = [
     password: "admin12345",
     role_id: "R100",
     created_by: "Super Admin",
+    number: "01911785317",
+    designation: "Manager",
+    branch_id: 1
   },
   {
     user_id: "u101",
@@ -142,6 +144,9 @@ let userData = [
     password: "user12345",
     role_id: "R101",
     created_by: "Super Admin",
+    number: "01911785318",
+    designation: "Manager",
+    branch_id: 1
   },
 ];
 const saveData = async () => {
@@ -159,4 +164,4 @@ const saveData = async () => {
     }
   }
 };
-// saveData();
+saveData();

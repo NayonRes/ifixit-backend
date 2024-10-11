@@ -5,9 +5,9 @@ const {
   store,
   update,
   remove
-} = require("../controller/orderController");
-const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
-const orderModel = require("../db/models/orderModel");
+} = require("../../../controller/orderController");
+const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
+const orderModel = require("../../../db/models/orderModel");
 
 const router = express.Router();
 

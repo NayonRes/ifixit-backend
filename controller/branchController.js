@@ -1,5 +1,5 @@
 const branchModel = require("../db/models/branchModel");
-const ErrorHander = require("../utils/errorHandler");
+const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");
 const responseBuilder = require("../builder/responseBuilder");
@@ -39,7 +39,7 @@ const show = catchAsyncError(async (req, res, next) => {
 });
 
 const store = catchAsyncError(async (req, res, next) => {
-  const { token } = req.cookies;
+  // const { token } = req.cookies;
   let newIdserial;
   let newIdNo;
   let newId;
@@ -51,11 +51,11 @@ const store = catchAsyncError(async (req, res, next) => {
   } else {
     newId = "b100";
   }
-  let decodedData = jwt.verify(token, process.env.JWT_SECRET);
+  // let decodedData = jwt.verify(token, process.env.JWT_SECRET);
   let newData = {
     ...req.body,
     category_id: newId,
-    created_by: decodedData?.user?.email,
+    // created_by: decodedData?.user?.email,
   };
 
   const data = await branchModel.create(newData);
@@ -71,7 +71,7 @@ const update = catchAsyncError(async (req, res, next) => {
 
   if (!data) {
     console.log("if");
-    return next(new ErrorHander("No data found", 404));
+    return next(new ErrorHandler("No data found", 404));
   }
   let decodedData = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -105,7 +105,7 @@ const remove = catchAsyncError(async (req, res, next) => {
   console.log("data", data);
   if (!data) {
     console.log("if");
-    return next(new ErrorHander("No data found", 404));
+    return next(new ErrorHandler("No data found", 404));
   }
 
   await data.remove();

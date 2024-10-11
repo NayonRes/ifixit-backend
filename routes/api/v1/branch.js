@@ -5,8 +5,8 @@ const {
   store,
   update,
   remove
-} = require("../controller/branchController");
-const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
+} = require("../../../controller/branchController");
+const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
 
 let router = express.Router();
 

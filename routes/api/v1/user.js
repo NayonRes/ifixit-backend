@@ -5,17 +5,16 @@ const {
   store,
   update,
   remove
-} = require("../controller/roleController");
-
-const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
+} = require("../../../controller/userController");
 
 const router = express.Router();
+const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
 
-router.route("/role")
+router.route("/category")
     .get(index)
     .post(store);
 
-router.route("/role/:id")
+router.route("/category/:id")
     .get(show)
     .put(update)
     .delete(remove);

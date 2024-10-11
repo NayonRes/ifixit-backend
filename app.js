@@ -1,5 +1,3 @@
-let createError = require("http-errors");
-const responseBuilder = require('./builder/responseBuilder');
 let express = require("express");
 const fs = require('fs');
 let path = require("path");
@@ -53,13 +51,26 @@ app.use(express.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(fileUpload({ useTempFiles: true }));
-const routesPath = path.join(__dirname, 'routes');
-fs.readdirSync(routesPath).forEach((file) => {
-  const route = require(path.join(routesPath, file));
-  if (typeof route === 'function') {
-    app.use('/', route);
+const webRoutesPath = path.join(__dirname, 'routes/web/v1');
+const apiRoutesPath = path.join(__dirname, 'routes/api/v1');
+
+// Load Web Routes
+fs.readdirSync(webRoutesPath).forEach((file) => {
+  const webRoute = require(path.join(webRoutesPath, file));
+  if (typeof webRoute === 'function') {
+    app.use('/', webRoute);
   } else {
-    console.error(`Route in file ${file} is not a valid route handler.`);
+    console.error(`Web route in file ${file} is not a valid route handler.`);
+  }
+});
+
+// Load API Routes
+fs.readdirSync(apiRoutesPath).forEach((file) => {
+  const apiRoute = require(path.join(apiRoutesPath, file));
+  if (typeof apiRoute === 'function') {
+    app.use('/api/v1', apiRoute);
+  } else {
+    console.error(`API route in file ${file} is not a valid route handler.`);
   }
 });
 

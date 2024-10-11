@@ -5,17 +5,17 @@ const {
   store,
   update,
   remove
-} = require("../controller/categoryController");
-const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
-const categoryModel = require("../db/models/categoryModel");
+} = require("../../../controller/productController");
+
+const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
 
 const router = express.Router();
 
-router.route("/category")
+router.route("/product")
     .get(index)
     .post(store);
 
-router.route("/category/:id")
+router.route("/product/:id")
     .get(show)
     .put(update)
     .delete(remove);

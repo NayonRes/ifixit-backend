@@ -5,10 +5,11 @@ const {
   store,
   update,
   remove
-} = require("../controller/userController");
+} = require("../../../controller/categoryController");
+const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
+const categoryModel = require("../../../db/models/categoryModel");
 
 const router = express.Router();
-const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 
 router.route("/category")
     .get(index)

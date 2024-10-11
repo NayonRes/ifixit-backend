@@ -5,17 +5,16 @@ const {
   store,
   update,
   remove
-} = require("../controller/productController");
-
-const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
+} = require("../../../controller/permissionController");
+const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
 
 const router = express.Router();
 
-router.route("/product")
+router.route("/permission")
     .get(index)
     .post(store);
 
-router.route("/product/:id")
+router.route("/permission/:id")
     .get(show)
     .put(update)
     .delete(remove);

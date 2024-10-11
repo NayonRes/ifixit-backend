@@ -5,9 +5,9 @@ const {
   store,
   update,
   remove
-} = require("../controller/locationController");
+} = require("../../../controller/locationController");
 
-const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
+const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
 
 let router = express.Router();
 router.route("/location")

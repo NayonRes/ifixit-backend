@@ -9,10 +9,14 @@ const {
 
 const router = express.Router();
 const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
+const storeUserRule = require('../../../rules/storeUserRule')
 
 router.route("/user")
-    .get(index)
-    .post(store);
+    .get(isAuthenticatedUser, index)
+    .post(
+        storeUserRule,
+        store
+    );
 
 router.route("/user/:id")
     .get(show)

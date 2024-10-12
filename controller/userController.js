@@ -58,6 +58,7 @@ const index = catchAsyncError(async (req, res, next) => {
         name: 1,
         email: 1,
         password: 1,
+        number: 1,
         designation: 1,
         image: 1,
         status: 1,
@@ -103,7 +104,7 @@ const store = catchAsyncError(async (req, res, next) => {
     imageData = await imageUpload(req.files.image, "users", next);
   }
   console.log("imageData", imageData);
-  let newIdserial;
+  let newIdSerial;
   let newIdNo;
   let newId;
   const lastDoc = await userModel.find().sort({ _id: -1 });
@@ -111,17 +112,18 @@ const store = catchAsyncError(async (req, res, next) => {
   console.log("lastDoc", lastDoc);
 
   if (lastDoc.length > 0) {
-    newIdserial = lastDoc[0].user_id.slice(0, 1);
-    newIdNo = parseInt(lastDoc[0].user_id.slice(1)) + 1;
-    newId = newIdserial.concat(newIdNo);
+    newId = lastDoc[0].user_id;
+    newIdNo = parseInt(lastDoc[0].user_id ?? 1004);
+    newId = newIdSerial.concat(newIdNo);
+    console.log("UserID" + newId)
   } else {
-    newId = "u100";
+    newId = "u103";
   }
   let decodedData = jwt.verify(token, process.env.JWT_SECRET);
   let newData = {
     ...req.body,
     image: imageData[0],
-    user_id: newId,
+    // user_id: newId,
     created_by: decodedData?.user?.email,
   };
   console.log("newData --------------------------1212", newData);
@@ -129,48 +131,6 @@ const store = catchAsyncError(async (req, res, next) => {
   res.send({ message: "success", status: 201, data: data });
 });
 
-const loginUser = catchAsyncError(async (req, res, next) => {
-  const { email, password } = req.body;
-
-  // checking if user has given password and email both
-
-  if (!email || !password) {
-    return next(new ErrorHandler("Please Enter Email & Password", 400));
-  }
-
-  const user = await userModel.findOne({ email }).select("+password");
-
-  if (!user) {
-    return next(new ErrorHandler("Invalid email or password", 401));
-  }
-
-  const isPasswordMatched = await user.comparePassword(password);
-  console.log("isPasswordMatched", isPasswordMatched);
-  if (!isPasswordMatched) {
-    return next(new ErrorHandler("Invalid email or password", 401));
-  }
-  let roleAndPermission = {};
-  if (user.role_id) {
-    roleAndPermission = await roleModel.findOne({ role_id: user.role_id });
-  }
-
-  // console.log("roleAndPermission=========================", roleAndPermission);
-  sendToken(user, roleAndPermission, 200, res);
-});
-
-const logout = catchAsyncError(async (req, res, next) => {
-  console.log("req========================");
-  console.log("cookies-------------------------", req.cookies);
-  res.cookie("token", null, {
-    expires: new Date(Date.now()),
-    httpOnly: true,
-  });
-
-  res.status(200).json({
-    success: true,
-    message: "Logged Out",
-  });
-});
 const remove = catchAsyncError(async (req, res, next) => {
   console.log("deleteData function is working");
   let data = await userModel.findById(req.params.id);

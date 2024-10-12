@@ -30,6 +30,7 @@ const index = catchAsyncError(async (req, res, next) => {
     limit: limit
   })
 });
+
 const show = catchAsyncError(async (req, res, next) => {
   let data = await branchModel.findById(req.params.id);
   if (!data) {
@@ -45,8 +46,8 @@ const store = catchAsyncError(async (req, res, next) => {
   let newId;
   const lastDoc = await branchModel.find().sort({ _id: -1 });
   if (lastDoc.length > 0) {
-    newIdserial = lastDoc[0].category_id.slice(0, 1);
-    newIdNo = parseInt(lastDoc[0].category_id.slice(1)) + 1;
+    newIdserial = lastDoc[0].branch_id.slice(0, 1);
+    newIdNo = parseInt(lastDoc[0].branch_id.slice(1)) + 1;
     newId = newIdserial.concat(newIdNo);
   } else {
     newId = "b100";
@@ -54,7 +55,7 @@ const store = catchAsyncError(async (req, res, next) => {
   // let decodedData = jwt.verify(token, process.env.JWT_SECRET);
   let newData = {
     ...req.body,
-    category_id: newId,
+    branch_id: newId,
     // created_by: decodedData?.user?.email,
   };
 

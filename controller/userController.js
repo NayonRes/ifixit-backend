@@ -8,6 +8,7 @@ const sendToken = require("../utils/jwtToken");
 const jwt = require("jsonwebtoken");
 const { main } = require("../utils/TestNodemailerMail");
 const categoryModel = require("../db/models/categoryModel");
+const validationResponseBuilder = require("../builder/validationResponseBuilder");
 
 const index = catchAsyncError(async (req, res, next) => {
   console.log("getDataWithPagination");
@@ -49,6 +50,14 @@ const index = catchAsyncError(async (req, res, next) => {
         localField: "role_id", // Field in userModel that holds the role ID
         foreignField: "role_id", // Field in roleModel that the role ID refers to
         as: "role", // The name of the field to add the result to
+      }
+    },
+    {
+      $lookup: {
+        from: "branches", // The name of the Role model collection in your database
+        localField: "branch_id", // Field in userModel that holds the role ID
+        foreignField: "branch_id", // Field in roleModel that the role ID refers to
+        as: "branch", // The name of the field to add the result to
       },
     },
     {
@@ -66,10 +75,12 @@ const index = catchAsyncError(async (req, res, next) => {
         created_at: 1,
         updated_by: 1,
         updated_at: 1,
-
         "role._id": 1,
         "role.role_id": 1,
         "role.name": 1,
+        "branch._id": 1,
+        "branch.branch_id": 1,
+        "branch.name": 1
       },
     },
     // { $unwind: "$role" }, // Unwind the array if you expect only one related role per user
@@ -96,7 +107,7 @@ const store = catchAsyncError(async (req, res, next) => {
   const user = await userModel.findOne({ email });
 
   if (user) {
-    return next(new ErrorHandler("Email already exists", 401));
+    return validationResponseBuilder(res, {email: "The email is already taken"});
   }
 
   let imageData = [];
@@ -104,26 +115,11 @@ const store = catchAsyncError(async (req, res, next) => {
     imageData = await imageUpload(req.files.image, "users", next);
   }
   console.log("imageData", imageData);
-  let newIdSerial;
-  let newIdNo;
-  let newId;
-  const lastDoc = await userModel.find().sort({ _id: -1 });
 
-  console.log("lastDoc", lastDoc);
-
-  if (lastDoc.length > 0) {
-    newId = lastDoc[0].user_id;
-    newIdNo = parseInt(lastDoc[0].user_id ?? 1004);
-    newId = newIdSerial.concat(newIdNo);
-    console.log("UserID" + newId)
-  } else {
-    newId = "u103";
-  }
   let decodedData = jwt.verify(token, process.env.JWT_SECRET);
   let newData = {
     ...req.body,
     image: imageData[0],
-    // user_id: newId,
     created_by: decodedData?.user?.email,
   };
   console.log("newData --------------------------1212", newData);
@@ -255,7 +251,7 @@ const update = catchAsyncError(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    message: "successfull",
+    message: "successful",
     user,
   });
 });

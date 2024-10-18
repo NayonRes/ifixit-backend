@@ -30,7 +30,7 @@ const server = http.createServer(app);
 
 // server.listen(port);
 
-server.listen(port, () => {
+server.listen(port, hostname, () => {
   // console.log("Server Running on port " + hostname + ":" + port);
   console.log("Server Running on port :" + port);
 });

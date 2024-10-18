@@ -1,7 +1,6 @@
 const { check, validationResult } = require('express-validator');
-const { validate, ValidationError, Joi } = require('express-validation')
-const validationResponseBuilder = require("../builder/validationResponseBuilder")
 const branchModel = require("../db/models/branchModel");
+const validationHandler = require("../builder/validationHandler");
 
 const storeUserRule = [
     check('name')
@@ -48,20 +47,8 @@ const storeUserRule = [
         .isLength({ max: 32 })
         .withMessage('Password cannot be more than 32 characters'),
 
-    (req, res, next) => {
-    console.log(req.body)
-        const errors = validationResult(req);
-        console.log(errors);
-        if (!errors.isEmpty()) {
-            // Create an object to return errors by field (key)
-            let errorObject = {};
-            errors.array().forEach(error => {
-                errorObject[error.path] = error.msg;
-            });
-            return validationResponseBuilder(res, errorObject)
-        }
-        next();
-    }
+
+    validationHandler
 ];
 
 module.exports = storeUserRule;

@@ -10,6 +10,7 @@ const {
 const router = express.Router();
 const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
 const storeUserRule = require('../../../rules/storeUserRule')
+const updateUserRule = require("../../../rules/updateUserRule");
 
 router.route("/user")
     .get(isAuthenticatedUser, index)
@@ -20,7 +21,7 @@ router.route("/user")
 
 router.route("/user/:id")
     .get(show)
-    .put(update)
+    .put(updateUserRule, update)
     .delete(remove);
 
 module.exports = router;

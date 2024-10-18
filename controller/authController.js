@@ -126,6 +126,14 @@ const updatePassword = catchAsyncError(async (req, res, next) => {
     sendToken(user, 200, res);
 });
 
+const profile = catchAsyncError(async (req, res, next) => {
+    let data = await userModel.findById(req.user.id);
+    if (!data) {
+        return res.send({ message: "No data found", status: 404 });
+    }
+    res.send({ message: "success", status: 200, data: data });
+});
+
 // update User Profile
 const updateProfile = catchAsyncError(async (req, res, next) => {
     console.log("req.params.id =======================", req.params.id);
@@ -192,7 +200,7 @@ const updateProfile = catchAsyncError(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        message: "successfull",
+        message: "successful",
         user,
     });
 });
@@ -201,6 +209,7 @@ module.exports = {
     token,
     logout,
     register,
+    profile,
     updatePassword,
     updateProfile,
 };

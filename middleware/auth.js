@@ -24,9 +24,14 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   // console.log("decodedData", decodedData);
 
   req.user = await User.findById(decodedData.user._id);
+  console.log("REQUEST_USER: " + req.user)
 
   // console.log("User found:", req.user);
-  if (!req.user.status) {
+  if (!req.user) {
+    // logout();
+    return next(new ErrorHander("You are not authenticated user", 401));
+  }
+  if (!req.user?.status) {
     // logout();
     return next(new ErrorHander("Your account has been deactivated", 401));
   }

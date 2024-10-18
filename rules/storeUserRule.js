@@ -22,7 +22,7 @@ const storeUserRule = [
 
     check('number')
         .trim()
-        .isEmail()
+        .notEmpty()
         .withMessage('The Mobile number is required'),
 
     check('email')

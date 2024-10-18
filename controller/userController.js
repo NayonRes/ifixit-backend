@@ -30,9 +30,9 @@ const index = catchAsyncError(async (req, res, next) => {
   if (req.query.email) {
     query.customer_phone = new RegExp(`^${req.query.email}$`, "i");
   }
-  if (req.query.status) {
-    query.status = req.query.status;
-  }
+  // if (req.query.status) {
+  //   query.status = req.query.status;
+  // }
 
   let totalData = await userModel.countDocuments(query);
   console.log("totalData=================================", totalData);

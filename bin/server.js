@@ -14,7 +14,7 @@ const http = require("http");
 console.log("env working", process.env.PORT);
 // var port = normalizePort(process.env.PORT || "3000");
 const port = process.env.PORT || 3000;
-const hostname = "127.0.0.1";
+const hostname = process.env.HOST || "127.0.0.1";
 app.set("port", port);
 console.log("port", port);
 

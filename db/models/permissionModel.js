@@ -2,11 +2,6 @@ const mongoose = require("mongoose");
 const PermissionData = require("../../initial-data/PermissionData");
 
 const permissionSchema = mongoose.Schema({
-  permission_id: {
-    type: String,
-    required: [true, "Please enter permission id"],
-    unique: true,
-  },
   name: {
     type: String,
     required: [true, "Please enter permission name"],
@@ -16,7 +11,7 @@ const permissionSchema = mongoose.Schema({
   module_name: {
     type: String,
     // default: 10000,
-    required: [true, "Please enter parent name"],
+    required: [true, "Please enter module name"],
   },
   category_id: {
     type: Array,

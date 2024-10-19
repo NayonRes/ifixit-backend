@@ -18,7 +18,7 @@ const sendToken = (user, roleAndPermission, statusCode, res) => {
     image: user.image || null,
     role: roleAndPermission.name || null,
     permission: roleAndPermission.permission || [],
-    status: user.status,
+    status: user.status || false,
   };
   console.log("newUser==============", newUser); 
   

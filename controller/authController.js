@@ -8,18 +8,6 @@ const sendToken = require("../utils/jwtToken");
 const jwt = require("jsonwebtoken");
 const { main } = require("../utils/TestNodemailerMail");
 
-const show = catchAsyncError(async (req, res, next) => {
-    console.log("getById");
-    let data = await userModel.findById(req.params.id);
-    if (!data) {
-        return next(new ErrorHandler("No data found", 404));
-    }
-    res.status(200).json({
-        success: true,
-        message: "success",
-        data: data,
-    });
-});
 const register = catchAsyncError(async (req, res, next) => {
     // console.log("req.files", req.files);
     // console.log("req.body", req.body);
@@ -107,27 +95,28 @@ const logout = catchAsyncError(async (req, res, next) => {
 
 const updatePassword = catchAsyncError(async (req, res, next) => {
     console.log("updatePassword");
-    const user = await userModel.findById(req.body.id).select("+password");
+    const user = await userModel.findById(req.user._id);
 
-    const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
+    const isPasswordMatched = await user.comparePassword(req.body.old_password);
+    console.log(isPasswordMatched)
 
     if (!isPasswordMatched) {
         return next(new ErrorHandler("Old password is incorrect", 400));
     }
 
-    if (req.body.newPassword !== req.body.confirmPassword) {
+    if (req.body.password !== req.body.password_confirm) {
         return next(new ErrorHandler("password does not match", 400));
     }
 
-    user.password = req.body.newPassword;
-
+    user.password = req.body.password;
     await user.save();
 
-    sendToken(user, 200, res);
+    // sendToken(user, 200, res);
+    res.send({ message: "success", status: 200, data: user });
 });
 
 const profile = catchAsyncError(async (req, res, next) => {
-    let data = await userModel.findById(req.user.id);
+    let data = await userModel.findById(req.user._id);
     if (!data) {
         return res.send({ message: "No data found", status: 404 });
     }
@@ -139,7 +128,7 @@ const updateProfile = catchAsyncError(async (req, res, next) => {
     console.log("req.params.id =======================", req.params.id);
     const { token } = req.cookies;
 
-    const userData = await userModel.findById(req.params.id);
+    const userData = await userModel.findById(req.user._id);
 
     if (!userData) {
         return next(new ErrorHandler("No data found", 404));
@@ -147,7 +136,7 @@ const updateProfile = catchAsyncError(async (req, res, next) => {
     let decodedData = jwt.verify(token, process.env.JWT_SECRET);
     const newUserData = {
         name: req.body.name,
-        // email: req.body.email,
+        email: req.body.email,
         role_id: req.body.role_id,
         status: req.body.status,
 

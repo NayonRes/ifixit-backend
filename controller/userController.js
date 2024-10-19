@@ -1,14 +1,11 @@
 const userModel = require("../db/models/userModel");
-const roleModel = require("../db/models/roleModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const imageUpload = require("../utils/imageUpload");
 const imageDelete = require("../utils/imageDelete");
-const sendToken = require("../utils/jwtToken");
 const jwt = require("jsonwebtoken");
-const { main } = require("../utils/TestNodemailerMail");
-const categoryModel = require("../db/models/categoryModel");
 const validationResponseBuilder = require("../builder/validationResponseBuilder");
+const sendToken = require("../utils/jwtToken");
 
 const index = catchAsyncError(async (req, res, next) => {
   console.log("getDataWithPagination");
@@ -80,7 +77,8 @@ const index = catchAsyncError(async (req, res, next) => {
         "role.name": 1,
         "branch._id": 1,
         "branch.branch_id": 1,
-        "branch.name": 1
+        "branch.name": 1,
+        permissions: 1,
       },
     },
     // { $unwind: "$role" }, // Unwind the array if you expect only one related role per user
@@ -153,27 +151,6 @@ const remove = catchAsyncError(async (req, res, next) => {
     message: "Delete successfully",
     data: data,
   });
-});
-
-const updatePassword = catchAsyncError(async (req, res, next) => {
-  console.log("updatePassword");
-  const user = await userModel.findById(req.body.id).select("+password");
-
-  const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
-
-  if (!isPasswordMatched) {
-    return next(new ErrorHandler("Old password is incorrect", 400));
-  }
-
-  if (req.body.newPassword !== req.body.confirmPassword) {
-    return next(new ErrorHandler("password does not match", 400));
-  }
-
-  user.password = req.body.newPassword;
-
-  await user.save();
-
-  sendToken(user, 200, res);
 });
 
 const show = catchAsyncError(async (req, res, next) => {
@@ -256,10 +233,22 @@ const update = catchAsyncError(async (req, res, next) => {
   });
 });
 
+const assignPermission = catchAsyncError(async (req, res, next) => {
+  let user = await userModel.findById(req.user._id);
+  if (!user) {
+    return res.send({ message: "No data found", status: 404 });
+  }
+  user.permissions = req.body.permissions;
+  await user.save();
+  // sendToken(user, 200, res);
+  res.send({ message: "success", status: 200, data: user });
+});
+
 module.exports = {
   index,
   show,
   store,
   update,
-  remove
+  remove,
+  assignPermission
 };

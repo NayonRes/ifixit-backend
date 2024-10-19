@@ -54,6 +54,12 @@ const userSchema = new mongoose.Schema({
     // default: "",
   },
 
+  permissions: {
+    type: Array,
+    default: [],
+    select: true
+  },
+
   remarks: {
     type: String,
   },

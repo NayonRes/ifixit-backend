@@ -4,7 +4,8 @@ const {
   show,
   store,
   update,
-  remove
+  remove,
+  assignPermission
 } = require("../../../controller/userController");
 
 const router = express.Router();
@@ -15,13 +16,17 @@ const updateUserRule = require("../../../rules/updateUserRule");
 router.route("/user")
     .get(isAuthenticatedUser, index)
     .post(
+        isAuthenticatedUser,
         storeUserRule,
         store
     );
 
 router.route("/user/:id")
-    .get(show)
-    .put(updateUserRule, update)
-    .delete(remove);
+    .get(isAuthenticatedUser, show)
+    .put(isAuthenticatedUser, updateUserRule, update)
+    .delete(isAuthenticatedUser, remove);
+
+router.route("/user/:id/assign")
+    .post(isAuthenticatedUser, assignPermission)
 
 module.exports = router;

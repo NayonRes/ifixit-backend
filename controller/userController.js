@@ -154,7 +154,7 @@ const remove = catchAsyncError(async (req, res, next) => {
 });
 
 const show = catchAsyncError(async (req, res, next) => {
-  let data = await userModel.findById(req.params.id);
+  let data = await userModel.findById(req.params.id).populate('permissions');
   if (!data) {
     return res.send({ message: "No data found", status: 404 });
   }
@@ -234,14 +234,33 @@ const update = catchAsyncError(async (req, res, next) => {
 });
 
 const assignPermission = catchAsyncError(async (req, res, next) => {
-  let user = await userModel.findById(req.user._id);
-  if (!user) {
-    return res.send({ message: "No data found", status: 404 });
+  try {
+    // 1. Fetch the user by ID (from the request)
+    let user = await userModel.findById(req.user._id);
+
+    // 2. Check if user exists
+    if (!user) {
+      return res.status(404).send({ message: "User not found", status: 404 });
+    }
+
+    // 3. Validate the permissions (ensure it's an array of permission strings or IDs)
+    if (!req.body.permissions || !Array.isArray(req.body.permissions)) {
+      return res.status(400).send({ message: "Invalid permissions data", status: 400 });
+    }
+
+    // 4. Assign permissions to the user (assuming permissions are strings or IDs)
+    user.permissions = req.body.permissions;
+
+    // 5. Save the updated user object
+    await user.save();
+
+    // 6. Respond with success message
+    res.status(200).send({ message: "Permissions assigned successfully", status: 200, data: user });
+
+  } catch (error) {
+    // 7. Error handling
+    res.status(500).send({ message: "Server error", status: 500, error: error.message });
   }
-  user.permissions = req.body.permissions;
-  await user.save();
-  // sendToken(user, 200, res);
-  res.send({ message: "success", status: 200, data: user });
 });
 
 module.exports = {

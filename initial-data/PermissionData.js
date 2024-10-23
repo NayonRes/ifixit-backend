@@ -1,83 +1,80 @@
 const PermissionData = [
-  { permission_id: "per100", name: "Primary", module_name: "Primary" },
-  { permission_id: "per101", name: "Dashboard", module_name: "Primary" },
-  // { permission_id: "per147", name: "Show Dashboard", module_name: "Dashboard" },
-  // //----------------Category----------------
-  // { permission_id: "per102", name: "Category", module_name: "Primary" },
-  // { permission_id: "per103", name: "Category List", module_name: "Category" },
-  // { permission_id: "per104", name: "Add Category", module_name: "Category" },
-  // { permission_id: "per105", name: "Update Category", module_name: "Category" },
-  // { permission_id: "per106", name: "Delete Category", module_name: "Category" },
-  // //----------------Location----------------
-  // { permission_id: "per107", name: "Location", module_name: "Primary" },
-  // { permission_id: "per108", name: "Location List", module_name: "Location" },
-  // { permission_id: "per109", name: "Add Location", module_name: "Location" },
-  // { permission_id: "per110", name: "Update Location", module_name: "Location" },
-  // { permission_id: "per111", name: "Delete Location", module_name: "Location" },
+  {name: "user-list", module_name: "user", description: "User list" },
+  {name: "user-create", module_name: "user", description: "User create" },
+  {name: "user-update", module_name: "user", description: "User update" },
+  {name: "user-action", module_name: "user", description: "User delete, active, inactive" },
 
-  // //----------------Filter----------------
-  // { permission_id: "per112", name: "Filter", module_name: "Primary" },
-  // { permission_id: "per113", name: "Filter List", module_name: "Filter" },
-  // { permission_id: "per114", name: "Add Filter", module_name: "Filter" },
-  // { permission_id: "per115", name: "Update Filter", module_name: "Filter" },
-  // { permission_id: "per116", name: "Delete Filter", module_name: "Filter" },
-  // //----------------Store----------------
-  // { permission_id: "per117", name: "Store", module_name: "Primary" },
-  // { permission_id: "per118", name: "Store List", module_name: "Store" },
-  // { permission_id: "per119", name: "Add Store", module_name: "Store" },
-  // { permission_id: "per120", name: "Update Store", module_name: "Store" },
-  // { permission_id: "per121", name: "Delete Store", module_name: "Store" },
+  //----------------Role----------------
+  {name: "role-list", module_name: "role", description: "Role list" },
+  {name: "role-create", module_name: "role", description: "Role create" },
+  {name: "role-update", module_name: "role", description: "Role update" },
+  {name: "role-action", module_name: "role", description: "Role delete, active, inactive" },
 
-  // //----------------Product----------------
-  // { permission_id: "per122", name: "Product", module_name: "Primary" },
-  // { permission_id: "per123", name: "Product List", module_name: "Product" },
-  // { permission_id: "per124", name: "Add Product", module_name: "Product" },
-  // { permission_id: "per125", name: "Update Product", module_name: "Product" },
-  // { permission_id: "per126", name: "Delete Product", module_name: "Product" },
+  //----------------Permission----------------
+  {name: "permission-list", module_name: "permission", description: "Permission list" },
+  {name: "permission-create", module_name: "permission", description: "Permission create" },
+  {name: "permission-update", module_name: "permission", description: "Permission update" },
+  {name: "permission-action", module_name: "permission", description: "Permission delete, active, inactive" },
 
-  // //----------------Order----------------
-  // { permission_id: "per127", name: "Order", module_name: "Primary" },
-  // { permission_id: "per128", name: "Order List", module_name: "Order" },
-  // { permission_id: "per129", name: "Add Order", module_name: "Order" },
-  // { permission_id: "per130", name: "Update Order", module_name: "Order" },
-  // { permission_id: "per131", name: "Delete Order", module_name: "Order" },
+  //----------------Category----------------
+  {name: "category-list", module_name: "category", description: "Category list" },
+  {name: "category-create", module_name: "category", description: "Category create" },
+  {name: "category-update", module_name: "category", description: "Category update" },
+  {name: "category-action", module_name: "category", description: "Category delete, active, inactive" },
 
-  // //----------------User----------------
-  // { permission_id: "per132", name: "User", module_name: "Primary" },
-  // { permission_id: "per133", name: "User List", module_name: "User" },
-  // { permission_id: "per134", name: "Add User", module_name: "User" },
-  // { permission_id: "per135", name: "Update User", module_name: "User" },
-  // { permission_id: "per136", name: "Delete User", module_name: "User" },
+  //----------------Product----------------
+  {name: "product-list", module_name: "product", description: "Product list" },
+  {name: "product-create", module_name: "product", description: "Product create" },
+  {name: "product-update", module_name: "product", description: "Product update" },
+  {name: "product-action", module_name: "product", description: "Product delete, active, inactive" },
 
-  // //----------------Role----------------
-  // { permission_id: "per137", name: "Role", module_name: "Primary" },
-  // { permission_id: "per138", name: "Role List", module_name: "Role" },
-  // { permission_id: "per139", name: "Add Role", module_name: "Role" },
-  // { permission_id: "per140", name: "Update Role", module_name: "Role" },
-  // { permission_id: "per141", name: "Delete Role", module_name: "Role" },
+  //----------------Spare Parts----------------
+  {name: "spare-parts-list", module_name: "spare-parts", description: "Spare parts list" },
+  {name: "spare-parts-create", module_name: "spare-parts", description: "Spare parts create" },
+  {name: "spare-parts-update", module_name: "spare-parts", description: "Spare parts update" },
+  {name: "spare-parts-action", module_name: "spare-parts", description: "Spare parts delete, active, inactive" },
 
-  // //----------------Permission----------------
-  // { permission_id: "per142", name: "Permission", module_name: "Primary" },
-  // {
-  //   permission_id: "per143",
-  //   name: "Permission List",
-  //   module_name: "Permission",
-  // },
-  // {
-  //   permission_id: "per144",
-  //   name: "Add Permission",
-  //   module_name: "Permission",
-  // },
-  // {
-  //   permission_id: "per145",
-  //   name: "Update Permission",
-  //   module_name: "Permission",
-  // },
-  // {
-  //   permission_id: "per146",
-  //   name: "Delete Permission",
-  //   module_name: "Permission",
-  // },
+  //----------------Branch----------------
+  {name: "branch-list", module_name: "branch", description: "Branch list" },
+  {name: "branch-create", module_name: "branch", description: "Branch create" },
+  {name: "branch-update", module_name: "branch", description: "Branch update" },
+  {name: "branch-action", module_name: "branch", description: "Branch delete, active, inactive" },
+
+  //----------------Location----------------
+  {name: "location-list", module_name: "location", description: "Location list" },
+  {name: "location-create", module_name: "location", description: "Location create" },
+  {name: "location-update", module_name: "location", description: "Location update" },
+  {name: "location-action", module_name: "location", description: "Location delete, active, inactive" },
+
+  //----------------Customer----------------
+  {name: "customer-list", module_name: "customer", description: "Customer list" },
+  {name: "customer-create", module_name: "customer", description: "Customer create" },
+  {name: "customer-update", module_name: "customer", description: "Customer update" },
+  {name: "customer-action", module_name: "customer", description: "Customer delete, active, inactive" },
+
+  //----------------Order----------------
+  {name: "order-list", module_name: "order", description: "Order list" },
+  {name: "order-create", module_name: "order", description: "Order create" },
+  {name: "order-update", module_name: "order", description: "Order update" },
+  {name: "order-action", module_name: "order", description: "Order delete, active, inactive" },
+
+  //----------------Product----------------
+  {name: "product-list", module_name: "product", description: "Product list" },
+  {name: "product-create", module_name: "product", description: "Product create" },
+  {name: "product-update", module_name: "product", description: "Product update" },
+  {name: "product-action", module_name: "product", description: "Product delete, active, inactive" },
+
+  //----------------Service----------------
+  {name: "service-list", module_name: "service", description: "Service list" },
+  {name: "service-create", module_name: "service", description: "Service create" },
+  {name: "service-update", module_name: "service", description: "Service update" },
+  {name: "service-action", module_name: "service", description: "Service delete, active, inactive" },
+
+  //----------------Supplier----------------
+  {name: "supplier-list", module_name: "supplier", description: "Supplier list" },
+  {name: "supplier-create", module_name: "supplier", description: "Supplier create" },
+  {name: "supplier-update", module_name: "supplier", description: "Supplier update" },
+  {name: "supplier-action", module_name: "supplier", description: "Supplier delete, active, inactive" },
 ];
 
 module.exports = PermissionData;

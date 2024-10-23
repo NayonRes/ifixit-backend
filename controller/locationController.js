@@ -16,8 +16,8 @@ const index = catchAsyncError(async (req, res, next) => {
   if (req.query.status) {
     query.status = req.query.status;
   }
-  if (req.query.parent_name) {
-    query.parent_name = new RegExp(`^${req.query.parent_name}$`, "i");
+  if (req.query.parent_id) {
+    query.parent_id = new RegExp(`^${req.query.parent_id}$`, "i");
   }
   let totalData = await locationModel.countDocuments(query);
   console.log("totalData=================================", totalData);
@@ -43,21 +43,10 @@ const show = catchAsyncError(async (req, res, next) => {
 
 const store = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
-  let newIdserial;
-  let newIdNo;
-  let newId;
-  const lastDoc = await locationModel.find().sort({ _id: -1 });
-  if (lastDoc.length > 0) {
-    newIdserial = lastDoc[0].location_id.slice(0, 1);
-    newIdNo = parseInt(lastDoc[0].location_id.slice(1)) + 1;
-    newId = newIdserial.concat(newIdNo);
-  } else {
-    newId = "l100";
-  }
+
   let decodedData = jwt.verify(token, process.env.JWT_SECRET);
   let newData = {
     ...req.body,
-    location_id: newId,
     created_by: decodedData?.user?.email,
   };
 
@@ -69,7 +58,6 @@ const update = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
   const { name } = req.body;
   let data = await locationModel.findById(req.params.id);
-  let oldParentName = data.name;
   if (!data) {
     console.log("if");
     return next(new ErrorHandler("No data found", 404));
@@ -82,19 +70,14 @@ const update = catchAsyncError(async (req, res, next) => {
     updated_at: new Date(),
   };
   data = await locationModel.findByIdAndUpdate(req.params.id, newData, {
-    new: true,
+    new: false,
     runValidators: true,
-    useFindAndModified: false,
+    useFindAndModified: true,
   });
-  const childrenParentUpdate = await locationModel.updateMany(
-    { parent_name: oldParentName },
-    { $set: { parent_name: name } }
-  );
   res.status(200).json({
     success: true,
     message: "Update successfully",
-    data: data,
-    childrenParentUpdate,
+    data: data
   });
 });
 

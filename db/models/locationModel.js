@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
 
 const locationSchema = mongoose.Schema({
-  location_id: {
+  parent_id: {
     type: String,
-    required: [true, "Please enter location id"],
-    unique: true,
+    required: [false, "Please enter location id"],
   },
   name: {
     type: String,
@@ -12,13 +11,9 @@ const locationSchema = mongoose.Schema({
     trim: true,
     unique: true,
   },
-  parent_name: {
-    type: String,
-    // default: 10000,
-    required: [true, "Please enter parent name"],
-  },
   remarks: {
     type: String,
+    trim: true
   },
   status: {
     type: Boolean,
@@ -45,9 +40,8 @@ const saveData = async () => {
   console.log("totalData 123456", totalData);
   if (totalData < 1) {
     const locDoc = new locationModel({
-      location_id:"l100",
       name: "Primary",
-      parent_name: "Primary",
+      remarks: "Primary",
     });
     await locDoc.save();
   }

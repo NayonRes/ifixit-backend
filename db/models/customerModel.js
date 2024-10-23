@@ -1,12 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 
-const serviceCustomerSchema = mongoose.Schema({
-  serviceCustomer_id: {
-    type: String,
-    required: [true, "Please enter serviceCustomer id"],
-    unique: true,
-  },
+const customerSchema = mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please enter serviceCustomer name"],
@@ -20,7 +15,7 @@ const serviceCustomerSchema = mongoose.Schema({
     validate: [validator.isEmail, "Please Enter a valid Email"],
   },
 
-  number: {
+  mobile: {
     type: String,
     maxLength: [14, "Mobile number cannot exceed 14 characters"],
     required: [true, "Please enter serviceCustomer name"],
@@ -30,11 +25,7 @@ const serviceCustomerSchema = mongoose.Schema({
     type: String,
     trim: true,
   },
-  behavior: {
-    type: String,
-    required: [true, "Please enter serviceCustomer name"],
-    trim: true,
-  },
+
   membership_id: {
     type: String,
     trim: true,
@@ -67,8 +58,8 @@ const serviceCustomerSchema = mongoose.Schema({
 });
 
 const customerModel = mongoose.model(
-  "serviceCustomer",
-  serviceCustomerSchema
+  "customers",
+    customerSchema
 );
 
 module.exports = customerModel;

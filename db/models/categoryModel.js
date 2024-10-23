@@ -1,21 +1,15 @@
 const mongoose = require("mongoose");
 
 const categorySchema = mongoose.Schema({
-  category_id: {
+  parent_id: {
     type: String,
-    required: [true, "Please enter category id"],
-    unique: true,
+    default: null
   },
   name: {
     type: String,
     required: [true, "Please enter category name"],
     trim: true,
     unique: true,
-  },
-  parent_name: {
-    type: String,
-    // default: 10000,
-    required: [true, "Please enter parent name"],
   },
   remarks: {
     type: String,
@@ -45,9 +39,7 @@ const saveData = async () => {
   console.log("totalData 123456", totalData);
   if (totalData < 1) {
     const catDoc = new categoryModel({
-      category_id: "c100",
       name: "Primary",
-      parent_name: "Primary",
     });
     await catDoc.save();
   }

@@ -16,8 +16,8 @@ const index = catchAsyncError(async (req, res, next) => {
   if (req.query.status) {
     query.status = req.query.status;
   }
-  if (req.query.parent_name) {
-    query.parent_name = new RegExp(`^${req.query.parent_name}$`, "i");
+  if (req.query.parent_id) {
+    query.parent_id = new RegExp(`^${req.query.parent_id}$`, "i");
   }
   let totalData = await categoryModel.countDocuments(query);
   console.log("totalData=================================", totalData);
@@ -42,21 +42,9 @@ const show = catchAsyncError(async (req, res, next) => {
 
 const store = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
-  let newIdserial;
-  let newIdNo;
-  let newId;
-  const lastDoc = await categoryModel.find().sort({ _id: -1 });
-  if (lastDoc.length > 0) {
-    newIdserial = lastDoc[0].category_id.slice(0, 1);
-    newIdNo = parseInt(lastDoc[0].category_id.slice(1)) + 1;
-    newId = newIdserial.concat(newIdNo);
-  } else {
-    newId = "c100";
-  }
   let decodedData = jwt.verify(token, process.env.JWT_SECRET);
   let newData = {
     ...req.body,
-    category_id: newId,
     created_by: decodedData?.user?.email,
   };
 
@@ -69,7 +57,6 @@ const update = catchAsyncError(async (req, res, next) => {
   const { name } = req.body;
 
   let data = await categoryModel.findById(req.params.id);
-  let oldParentName = data.name;
 
   if (!data) {
     console.log("if");
@@ -86,18 +73,13 @@ const update = catchAsyncError(async (req, res, next) => {
   data = await categoryModel.findByIdAndUpdate(req.params.id, newData, {
     new: true,
     runValidators: true,
-    useFindAndModified: false,
+    useFindAndModified: true,
   });
 
-  const childrenParentUpdate = await categoryModel.updateMany(
-    { parent_name: oldParentName },
-    { $set: { parent_name: name } }
-  );
   res.status(200).json({
     success: true,
     message: "Update successfully",
-    data: data,
-    childrenParentUpdate,
+    data: data
   });
 });
 

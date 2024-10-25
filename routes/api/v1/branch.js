@@ -1,21 +1,30 @@
 const express = require("express");
 const {
-  index,
-  show,
-  store,
-  update,
-  remove
+    index,
+    show,
+    store,
+    update,
+    remove,
+    dropdown,
+    dropdownChild
 } = require("../../../controller/branchController");
-const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
+const {isAuthenticatedUser, authorizeRoles} = require("../../../middleware/auth");
 
 let router = express.Router();
 
 router.route("/branch")
-    .get(index)
-    .post(store);
+    .get(isAuthenticatedUser, authorizeRoles('branch-list'), index)
+    .post(isAuthenticatedUser, authorizeRoles('branch-create'), store);
+
+router.route("/branch/dropdown")
+    .get(isAuthenticatedUser, dropdown);
+
+router.route("/branch/child")
+    .get(isAuthenticatedUser, dropdownChild);
+
 router.route("/branch/:id")
-    .get(show)
-    .put(update)
-    .delete(remove);
+    .get(isAuthenticatedUser, authorizeRoles('branch-show'), show)
+    .put(isAuthenticatedUser, authorizeRoles('branch-update'), update)
+    .delete(isAuthenticatedUser, authorizeRoles('branch-action'), remove);
 
 module.exports = router;

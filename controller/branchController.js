@@ -3,6 +3,7 @@ const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");
 const responseBuilder = require("../builder/responseBuilder");
+const locationModel = require("../db/models/locationModel");
 
 const index = catchAsyncError(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
@@ -117,10 +118,66 @@ const remove = catchAsyncError(async (req, res, next) => {
   });
 });
 
+
+
+const dropdownChild = catchAsyncError(async (req, res, next) => {
+  // Fetch locations where parent_id is not equal to provided id
+  const data = await branchModel
+      .find({parent_id: {$ne: req.params.parent_id}}, "name _id")
+      .lean();
+
+  // Logging data if needed
+  console.log("Branch list:", data);
+
+  // Return response
+  res.status(200).json({
+    success: true,
+    message: "Data fetched successfully",
+    data,
+  });
+});
+
+const dropdown = catchAsyncError(async (req, res, next) => {
+  try {
+    console.log(req)
+    // Fetch only the required fields
+    const data = await branchModel.find({}, "name _id").lean();
+    console.log(data)
+
+    // Log the fetched data
+    console.log("Fetched branch list:", data);
+
+    // Check if data exists
+    if (!data.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No data found",
+        data: [],
+      });
+    }
+
+    // Return successful response
+    res.status(200).json({
+      success: true,
+      message: "Data fetched successfully",
+      data,
+    });
+  } catch (error) {
+    console.error("Error fetching locations:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = {
   index,
   show,
   store,
   update,
-  remove
+  remove,
+  dropdown,
+  dropdownChild
 };

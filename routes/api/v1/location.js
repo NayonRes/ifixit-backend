@@ -19,7 +19,7 @@ router.route("/location")
 router.route("/location/dropdown")
     .get(dropdown);
 
-router.route("/location/dropdown/child")
+router.route("/location/child")
     .get(dropdownChild);
 
 router.route("/location/:id")

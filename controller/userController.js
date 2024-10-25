@@ -242,9 +242,11 @@ const assignPermission = catchAsyncError(async (req, res, next) => {
     if (!user) {
       return res.status(404).send({ message: "User not found", status: 404 });
     }
+    console.log(req.body)
 
     // 3. Validate the permissions (ensure it's an array of permission strings or IDs)
     if (!req.body.permissions || !Array.isArray(req.body.permissions)) {
+      console.log(req.body.permissions)
       return res.status(400).send({ message: "Invalid permissions data", status: 400 });
     }
 
@@ -258,6 +260,7 @@ const assignPermission = catchAsyncError(async (req, res, next) => {
     res.status(200).send({ message: "Permissions assigned successfully", status: 200, data: user });
 
   } catch (error) {
+    console.log(error)
     // 7. Error handling
     res.status(500).send({ message: "Server error", status: 500, error: error.message });
   }

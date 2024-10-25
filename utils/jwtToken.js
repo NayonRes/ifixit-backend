@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const sendToken = (user, roleAndPermission, statusCode, res) => {
+const sendToken = (user, statusCode, res) => {
   // const token = user.getJWTToken();
 
   // options for cookie
@@ -16,16 +16,11 @@ const sendToken = (user, roleAndPermission, statusCode, res) => {
     name: user.name || null,
     email: user.email || null,
     image: user.image || null,
-    role: roleAndPermission.name || null,
-    permission: roleAndPermission.permission || [],
+    permissions: user.permissions || [],
     status: user.status || false,
   };
   console.log("newUser==============", newUser); 
-  
 
-  // const token = jwt.sign({ user: newUser }, process.env.JWT_SECRET, {
-  //   expiresIn: "60m",
-  // });
   const token = jwt.sign({ user: newUser }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });

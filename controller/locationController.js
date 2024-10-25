@@ -2,6 +2,7 @@ const locationModel = require("../db/models/locationModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 const index = catchAsyncError(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
@@ -97,10 +98,75 @@ const remove = catchAsyncError(async (req, res, next) => {
     data: data,
   });
 });
+
+
+const dropdownChild = catchAsyncError(async (req, res, next) => {
+  // Validate ObjectId for parent_id
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid parent ID",
+    });
+  }
+
+  // Fetch locations where parent_id is not equal to provided id
+  const data = await locationModel
+      .find({ parent_id: { $ne: id } }, "name _id")
+      .lean();
+
+  // Logging data if needed
+  console.log("Category list:", data);
+
+  // Return response
+  res.status(200).json({
+    success: true,
+    message: "Data fetched successfully",
+    data,
+  });
+});
+
+const dropdown = catchAsyncError(async (req, res, next) => {
+  try {
+    console.log(req)
+    // Fetch only the required fields
+    const data = await locationModel.find({}, "name _id").lean();
+    console.log(data)
+
+    // Log the fetched data
+    console.log("Fetched location list:", data);
+
+    // Check if data exists
+    if (!data.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No data found",
+        data: [],
+      });
+    }
+
+    // Return successful response
+    res.status(200).json({
+      success: true,
+      message: "Data fetched successfully",
+      data,
+    });
+  } catch (error) {
+    console.error("Error fetching locations:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = {
   index,
   show,
   store,
   update,
-  remove
+  remove,
+  dropdown,
+  dropdownChild
 };

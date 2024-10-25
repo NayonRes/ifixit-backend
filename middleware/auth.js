@@ -40,27 +40,25 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
 });
 
 exports.authorizeRoles = (permission) => {
-  return (req, res, next) => {
-    const { token } = req.cookies;
+  return async (req, res, next) => {
+    const {token} = req.cookies;
     let decodedData;
     try {
       decodedData = jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
       return next(new ErrorHander("Invalid or expired token", 401));
     }
-    // console.log("authorizeRoles Middleware executed");
-    // console.log("permission", permission);
 
-    // console.log("req.user.role", decodedData.user.permission);
+    let user = await User.findById(decodedData.user._id);
 
-    let hasPermission = decodedData.user.permission.includes(permission);
+    let hasPermission = user.permissions.includes(permission);
 
     console.log("hasPermission", hasPermission);
     if (!hasPermission) {
       console.log("You don't have the permission");
 
       return next(
-        new ErrorHander("You are not allowed to access this resource", 403)
+          new ErrorHander("You are not allowed to access this resource", 403)
       );
     }
 

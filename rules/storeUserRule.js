@@ -19,7 +19,7 @@ const storeUserRule = [
         })
         .withMessage('The branch ID does not matched'),
 
-    check('number')
+    check('mobile')
         .trim()
         .notEmpty()
         .withMessage('The Mobile number is required'),

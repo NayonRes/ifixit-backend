@@ -3,6 +3,7 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const PermissionData = require("../../initial-data/PermissionData")
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -17,7 +18,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: [validator.isEmail, "Please Enter a valid Email"],
   },
-  number: {
+  mobile: {
     type: String,
     maxLength: [14, "Mobile number cannot exceed 14 characters"],
     required: [true, "Please enter mobile number"],
@@ -47,11 +48,6 @@ const userSchema = new mongoose.Schema({
       type: String,
       // required: true,
     },
-  },
-  role_id: {
-    type: String,
-    // required: [true, "Please Select A Role"],
-    // default: "",
   },
 
   permissions: {
@@ -132,9 +128,8 @@ let userData = [
     name: "Admin",
     email: "admin@dg.com",
     password: "admin12345",
-    role_id: "R100",
     created_by: "Super Admin",
-    number: "01911785317",
+    mobile: "01911785317",
     designation: "Manager",
     branch_id: 1
   },
@@ -143,9 +138,8 @@ let userData = [
     name: "User",
     email: "user@dg.com",
     password: "user12345",
-    role_id: "R101",
     created_by: "Super Admin",
-    number: "01911785318",
+    mobile: "01911785318",
     designation: "Manager",
     branch_id: 1
   },
@@ -153,13 +147,14 @@ let userData = [
 const saveData = async () => {
   let totalData = await user.countDocuments();
   console.log("totalData 123456", totalData);
+  console.log(PermissionData)
 
   if (totalData < 1) {
     for (let index = 0; index < userData.length; index++) {
       const element = userData[index];
 
       console.log("element", element);
-
+      element.permissions = PermissionData.map(p => p.name);
       const userDoc = new user(element);
       await userDoc.save();
     }

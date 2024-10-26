@@ -58,12 +58,6 @@ const PermissionData = [
   {name: "order-update", module_name: "order", description: "Order update" },
   {name: "order-action", module_name: "order", description: "Order delete, active, inactive" },
 
-  //----------------Product----------------
-  {name: "product-list", module_name: "product", description: "Product list" },
-  {name: "product-create", module_name: "product", description: "Product create" },
-  {name: "product-update", module_name: "product", description: "Product update" },
-  {name: "product-action", module_name: "product", description: "Product delete, active, inactive" },
-
   //----------------Service----------------
   {name: "service-list", module_name: "service", description: "Service list" },
   {name: "service-create", module_name: "service", description: "Service create" },

@@ -28,6 +28,6 @@ router.route("/user/:id")
     .delete(isAuthenticatedUser, hasPermission('user-action'), remove);
 
 router.route("/user/:id/assign")
-    .post(isAuthenticatedUser, hasPermission('user-permission-assign'), assignPermission)
+    .post(isAuthenticatedUser, hasPermission('user-list'), assignPermission)
 
 module.exports = router;

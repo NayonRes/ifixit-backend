@@ -117,7 +117,7 @@ const dropdown = catchAsyncError(async (req, res, next) => {
     try {
         console.log(req)
         // Fetch only the required fields
-        const data = await branchModel.find({}, "name _id").lean();
+        const data = await branchModel.find({ parent_id: null}, "name _id").lean();
         console.log(data)
 
         // Log the fetched data

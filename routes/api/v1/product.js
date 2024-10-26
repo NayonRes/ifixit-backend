@@ -7,17 +7,17 @@ const {
   remove
 } = require("../../../controller/productController");
 
-const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
+const { isAuthenticatedUser, hasPermission } = require("../../../middleware/auth");
 
 const router = express.Router();
 
 router.route("/product")
-    .get(index)
-    .post(store);
+    .get(isAuthenticatedUser, hasPermission('product-list'), index)
+    .post(isAuthenticatedUser, hasPermission('product-create'), store);
 
 router.route("/product/:id")
-    .get(show)
-    .put(update)
-    .delete(remove);
+    .get(isAuthenticatedUser, hasPermission('product-show'), show)
+    .put(isAuthenticatedUser, hasPermission('product-update'), update)
+    .delete(isAuthenticatedUser, hasPermission('product-action'), remove);
 
 module.exports = router;

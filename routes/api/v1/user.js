@@ -9,24 +9,25 @@ const {
 } = require("../../../controller/userController");
 
 const router = express.Router();
-const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
+const { isAuthenticatedUser, hasPermission } = require("../../../middleware/auth");
 const storeUserRule = require('../../../rules/storeUserRule')
 const updateUserRule = require("../../../rules/updateUserRule");
 
 router.route("/user")
-    .get(isAuthenticatedUser, index)
+    .get(isAuthenticatedUser, hasPermission('user-list'), index)
     .post(
         isAuthenticatedUser,
+        hasPermission('user-create'),
         storeUserRule,
         store
     );
 
 router.route("/user/:id")
-    .get(isAuthenticatedUser, show)
-    .put(isAuthenticatedUser, updateUserRule, update)
-    .delete(isAuthenticatedUser, remove);
+    .get(isAuthenticatedUser, hasPermission('user-show'), show)
+    .put(isAuthenticatedUser, hasPermission('user-update'), updateUserRule, update)
+    .delete(isAuthenticatedUser, hasPermission('user-action'), remove);
 
 router.route("/user/:id/assign")
-    .post(isAuthenticatedUser, assignPermission)
+    .post(isAuthenticatedUser, hasPermission('user-permission-assign'), assignPermission)
 
 module.exports = router;

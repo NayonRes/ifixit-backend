@@ -7,17 +7,17 @@ const {
   remove
 } = require("../../../controller/productController");
 
-const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
+const { isAuthenticatedUser, hasPermission } = require("../../../middleware/auth");
 
 const router = express.Router();
 
 router.route("/spare-parts")
-    .get(isAuthenticatedUser, index)
-    .post(isAuthenticatedUser, store);
+    .get(isAuthenticatedUser, hasPermission('parts-list'), index)
+    .post(isAuthenticatedUser, hasPermission('parts-create'), store);
 
 router.route("/spare-parts/:id")
-    .get(isAuthenticatedUser, show)
-    .put(isAuthenticatedUser, update)
-    .delete(isAuthenticatedUser, remove);
+    .get(isAuthenticatedUser, hasPermission('parts-show'), show)
+    .put(isAuthenticatedUser, hasPermission('parts-update'), update)
+    .delete(isAuthenticatedUser, hasPermission('parts-action'), remove);
 
 module.exports = router;

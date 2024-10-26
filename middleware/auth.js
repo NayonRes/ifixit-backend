@@ -39,7 +39,7 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   next();
 });
 
-exports.authorizeRoles = (permission) => {
+exports.hasPermission = (permission) => {
   return async (req, res, next) => {
     const {token} = req.cookies;
     let decodedData;

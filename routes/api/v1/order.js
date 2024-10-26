@@ -6,18 +6,17 @@ const {
   update,
   remove
 } = require("../../../controller/orderController");
-const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
-const orderModel = require("../../../db/models/orderModel");
+const { isAuthenticatedUser, hasPermission } = require("../../../middleware/auth");
 
 const router = express.Router();
 
 router.route("/order")
-    .get(index)
-    .post(store);
+    .get(isAuthenticatedUser, hasPermission('order-list'), index)
+    .post(isAuthenticatedUser, hasPermission('order-create'), store);
 
 router.route("/order/:id")
-    .get(show)
-    .put(update)
-    .delete(remove);
+    .get(isAuthenticatedUser, hasPermission('order-show'), show)
+    .put(isAuthenticatedUser, hasPermission('order-update'), update)
+    .delete(isAuthenticatedUser, hasPermission('order-action'), remove);
 
 module.exports = router;

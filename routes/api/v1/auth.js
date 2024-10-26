@@ -7,7 +7,7 @@ const {
     updateProfile,
     updatePassword
 } = require("../../../controller/authController");
-const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
+const { isAuthenticatedUser, hasPermission } = require("../../../middleware/auth");
 
 let router = express.Router();
 

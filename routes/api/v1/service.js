@@ -1,4 +1,4 @@
-var express = require("express");
+const express = require("express");
 const {
   index,
   show,
@@ -6,17 +6,17 @@ const {
   update,
   remove
 } = require("../../../controller/serviceController");
-const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
+const { isAuthenticatedUser, hasPermission } = require("../../../middleware/auth");
 
-var router = express.Router();
+let router = express.Router();
 
 router.route("/service")
-    .get(index)
-    .post(store);
+    .get(isAuthenticatedUser, hasPermission('service-list'), index)
+    .post(isAuthenticatedUser, hasPermission('service-create'), store);
 
 router.route("/service/:id")
-    .get(show)
-    .put(update)
-    .delete(remove);
+    .get(isAuthenticatedUser, hasPermission('service-show'), show)
+    .put(isAuthenticatedUser, hasPermission('service-update'), update)
+    .delete(isAuthenticatedUser, hasPermission('service-action'), remove);
 
 module.exports = router;

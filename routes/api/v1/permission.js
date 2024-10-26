@@ -6,17 +6,17 @@ const {
   update,
   remove
 } = require("../../../controller/permissionController");
-const { isAuthenticatedUser, authorizeRoles } = require("../../../middleware/auth");
+const { isAuthenticatedUser, hasPermission } = require("../../../middleware/auth");
 
 const router = express.Router();
 
 router.route("/permission")
-    .get(index)
-    .post(store);
+    .get(isAuthenticatedUser, hasPermission('permission-list'), index)
+    .post(isAuthenticatedUser, hasPermission('permission-create'), store);
 
 router.route("/permission/:id")
-    .get(show)
-    .put(update)
-    .delete(remove);
+    .get(isAuthenticatedUser, hasPermission('permission-show'), show)
+    .put(isAuthenticatedUser, hasPermission('permission-update'), update)
+    .delete(isAuthenticatedUser, hasPermission('permission-action'), remove);
 
 module.exports = router;

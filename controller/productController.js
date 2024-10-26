@@ -5,6 +5,7 @@ const imageUpload = require("../utils/imageUpload");
 const imageDelete = require("../utils/imageDelete");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");
+const filterHelper = require("../helpers/filterHelper");
 
 const index = catchAsyncError(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
@@ -16,49 +17,7 @@ const index = catchAsyncError(async (req, res, next) => {
   const maxPrice = req.query.maxPrice;
   const startDate = req.query.startDate;
   const endDate = req.query.endDate;
-  var query = {};
-  if (req.query.name) {
-    query.name = new RegExp(`^${req.query.name}$`, "i");
-  }
-  if (req.query.status) {
-    query.status = req.query.status;
-  }
-
-  if (req.query.sku) {
-    query.sku = new RegExp(`^${req.query.sku}$`, "i");
-  }
-  if (req.query.category_id) {
-    query.category_id = new RegExp(`^${req.query.category_id}$`, "i");
-  }
-  if (parseInt(minPrice) && parseInt(maxPrice)) {
-    query.price = {
-      $gte: parseInt(minPrice),
-      $lte: parseInt(maxPrice),
-    };
-  } else if (parseInt(minPrice)) {
-    query.price = {
-      $gte: parseInt(minPrice),
-    };
-  } else if (parseInt(maxPrice)) {
-    query.price = {
-      $lte: parseInt(maxPrice),
-    };
-  }
-  console.log("startDate", startDate);
-  if (startDate && endDate) {
-    query.created_at = {
-      $gte: new Date(`${startDate}T00:00:00.000Z`),
-      $lte: new Date(`${endDate}T23:59:59.999Z`),
-    };
-  } else if (startDate) {
-    query.created_at = {
-      $gte: new Date(`${startDate}T00:00:00.000Z`),
-    };
-  } else if (endDate) {
-    query.created_at = {
-      $lte: new Date(`${endDate}T23:59:59.999Z`),
-    };
-  }
+  let query = filterHelper(req)
   let totalData = await productModel.countDocuments(query);
   console.log("totalData=================================", totalData);
 

@@ -2,6 +2,7 @@ const serviceModel = require("../db/models/serviceModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");
+const filterHelper = require("../helpers/filterHelper");
 
 const index = catchAsyncError(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
@@ -9,16 +10,7 @@ const index = catchAsyncError(async (req, res, next) => {
   const limit = parseInt(req.query.limit) || 10;
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
-  var query = {};
-  if (req.query.name) {
-    query.name = new RegExp(`^${req.query.name}$`, "i");
-  }
-  if (req.query.status) {
-    query.status = req.query.status;
-  }
-  if (req.query.parent_name) {
-    query.parent_name = new RegExp(`^${req.query.parent_name}$`, "i");
-  }
+  let query = filterHelper(req)
   let totalData = await serviceModel.countDocuments(query);
   console.log("totalData=================================", totalData);
   const data = await serviceModel.find(query).skip(startIndex).limit(limit);

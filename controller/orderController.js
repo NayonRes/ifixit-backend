@@ -3,6 +3,7 @@ const catchAsyncError = require("../middleware/catchAsyncError");
 const orderModel = require("../db/models/orderModel");
 const productModel = require("../db/models/productModel");
 const jwt = require("jsonwebtoken");
+const filterHelper = require("../helpers/filterHelper");
 
 const index = catchAsyncError(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
@@ -10,22 +11,8 @@ const index = catchAsyncError(async (req, res, next) => {
   const limit = parseInt(req.query.limit) || 10;
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
-  let query = {};
-  if (req.query.orderID) {
-    query.order_id = new RegExp(`^${req.query.orderID}$`, "i");
-  }
-  if (req.query.customerName) {
-    query.customer_name = new RegExp(`^${req.query.customerName}$`, "i");
-  }
-  if (req.query.customerEmail) {
-    query.customer_email = new RegExp(`^${req.query.customerEmail}$`, "i");
-  }
-  if (req.query.customerPhone) {
-    query.customer_phone = new RegExp(`^${req.query.customerPhone}$`, "i");
-  }
-  if (req.query.status) {
-    query.status = req.query.status;
-  }
+
+  let query = filterHelper(req)
 
   let totalData = await orderModel.countDocuments(query);
   console.log("totalData=================================", totalData);

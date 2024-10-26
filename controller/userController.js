@@ -5,7 +5,7 @@ const imageUpload = require("../utils/imageUpload");
 const imageDelete = require("../utils/imageDelete");
 const jwt = require("jsonwebtoken");
 const validationResponseBuilder = require("../builder/validationResponseBuilder");
-const sendToken = require("../utils/jwtToken");
+const filterHelper = require("../helpers/filterHelper");
 
 const index = catchAsyncError(async (req, res, next) => {
   console.log("getDataWithPagination");
@@ -16,29 +16,11 @@ const index = catchAsyncError(async (req, res, next) => {
   const limit = parseInt(req.query.limit) || 10;
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
-  var query = {};
-  if (req.query.name) {
-    query.name = new RegExp(`^${req.query.name}$`, "i");
-  }
 
-  if (req.query.email) {
-    query.email = new RegExp(`^${req.query.email}$`, "i");
-  }
-  if (req.query.email) {
-    query.customer_phone = new RegExp(`^${req.query.email}$`, "i");
-  }
-  // if (req.query.status) {
-  //   query.status = req.query.status;
-  // }
+  let query = filterHelper(req)
 
   let totalData = await userModel.countDocuments(query);
   console.log("totalData=================================", totalData);
-  // const data = await userModel
-  //   .find(query)
-  //   .sort({ created_at: -1 })
-  //   .skip(startIndex)
-  //   .limit(limit);
-
   const data = await userModel.aggregate([
     { $match: query },
     {

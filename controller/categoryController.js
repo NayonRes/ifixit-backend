@@ -123,7 +123,7 @@ const dropdown = catchAsyncError(async (req, res, next) => {
   try {
     console.log(req)
     // Fetch only the required fields
-    const data = await categoryModel.find({}, "name _id").lean();
+    const data = await categoryModel.find({ parent_id: null}, "name _id").lean();
     console.log(data)
 
     // Log the fetched data

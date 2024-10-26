@@ -3,6 +3,7 @@ const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const filterHelper = require("../helpers/filterHelper")
 
 const index = catchAsyncError(async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
@@ -10,16 +11,7 @@ const index = catchAsyncError(async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 10;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    var query = {};
-    if (req.query.name) {
-        query.name = new RegExp(`^${req.query.name}$`, "i");
-    }
-    if (req.query.status) {
-        query.status = req.query.status;
-    }
-    if (req.query.parent_id) {
-        query.parent_id = new RegExp(`^${req.query.parent_id}$`, "i");
-    }
+    let query = filterHelper(req)
     let totalData = await locationModel.countDocuments(query);
     console.log("totalData=================================", totalData);
     const data = await locationModel.find(query).skip(startIndex).limit(limit);
@@ -121,7 +113,7 @@ const dropdown = catchAsyncError(async (req, res, next) => {
     try {
         console.log(req)
         // Fetch only the required fields
-        const data = await locationModel.find({}, "name _id").lean();
+        const data = await locationModel.find({ parent_id: null}, "name _id").lean();
         console.log(data)
 
         // Log the fetched data

@@ -64,7 +64,7 @@ const index = catchAsyncError(async (req, res, next) => {
         name: 1,
         email: 1,
         password: 1,
-        number: 1,
+        mobile: 1,
         designation: 1,
         image: 1,
         status: 1,

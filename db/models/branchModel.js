@@ -1,21 +1,15 @@
 const mongoose = require("mongoose");
 
 const branchSchema = mongoose.Schema({
-  branch_id: {
+  parent_id: {
     type: String,
-    required: [true, "Please enter branch id"],
-    unique: true,
+    default: null,
   },
   name: {
     type: String,
     required: [true, "Please enter branch name"],
     trim: true,
     unique: true,
-  },
-  parent_name: {
-    type: String,
-    // default: 10000,
-    required: [true, "Please enter parent name"],
   },
   remarks: {
     type: String,

@@ -3,150 +3,77 @@ const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");
 const responseBuilder = require("../builder/responseBuilder");
-
-const getParentDropdown = catchAsyncError(async (req, res, next) => {
-  const data = await permissionModel.find({}, "name permission_id").lean();
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: data,
-  });
-});
-
-const getLeafPermissionList = catchAsyncError(async (req, res, next) => {
-  console.log("getLeafPermissionList");
-  const leafNodes2 = await permissionModel.aggregate([
-    // { $match: { parent_name: "Mobile" } },
-    {
-      $lookup: {
-        from: "permissions",
-        localField: "name",
-        foreignField: "module_name",
-        as: "children",
-      },
-    },
-    {
-      $addFields: {
-        isLeaf: { $eq: ["$children", []] },
-      },
-    },
-    { $match: { isLeaf: true } },
-    { $project: { _id: 1, name: 1, module_name: 1, permission_id: 1 } },
-    // { $project: { _id: 1, name: 1, module_name: 1, category_id: 1 } },
-    { $sort: { module_name: 1 } },
-  ]);
-
-  // res.json(leafNodes2);
-
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: leafNodes2,
-  });
-});
-// const getCategoryWiseFilterList = catchAsyncError(async (req, res, next) => {
-//   console.log("req.body", req.body.category_Ids);
-
-//   const data = await permissionModel
-//     .find(
-//       {
-//         category_id: {
-//           $in: req.body.category_Ids,
-//         },
-//       },
-//       "name module_name"
-//     )
-//     .lean()
-//     .sort({ module_name: 1 });
-
-//   let result = [];
-
-//   data.map((p) => {
-//     // filterValues.some((e) => e.filter_name === p.module_name);
-//     if (!result.some((e) => e.filter_name === p.module_name)) {
-//       let filterDataByParentName = data.filter(
-//         (res) => res.module_name === p.module_name
-//       );
-//       result.push({
-//         filter_name: p.module_name,
-//         filter_values: filterDataByParentName,
-//       });
-//     }
-//   });
-
-//   res.status(200).json({
-//     success: true,
-//     message: "successful",
-//     data: result,
-//   });
-// });
+const filterHelper = require("../helpers/filterHelper");
 
 const index = catchAsyncError(async (req, res, next) => {
-  const page = parseInt(req.query.page) || 1;
-  console.log("===Filter========req.query.page", req.query.page);
-  const limit = parseInt(req.query.limit) || 10;
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
-  var query = {};
-  if (req.query.name) {
-    query.name = new RegExp(`^${req.query.name}$`, "i");
-  }
-  if (req.query.status) {
-    query.status = req.query.status;
-  }
-  if (req.query.module_name) {
-    query.module_name = new RegExp(`^${req.query.module_name}$`, "i");
-  }
-  let totalData = await permissionModel.countDocuments(query);
-  console.log("totalData=================================", totalData);
-
-  // let data = await permissionModel.find(query).skip(startIndex).limit(limit);
-
-  // const data = permissionModel.aggregate([
-  //   {
-  //     $graphLookup: {
-  //       from: "permissions",
-  //       startWith: "$module_name",
-  //       connectFromField: "module_name",
-  //       connectToField: "name",
-  //       as: "reportingHierarchy",
-  //     },
-  //   },
-  // ]);
-
-  // this query for name with parent list
-  const pipeline = [
+  const data = await permissionModel.aggregate([
     {
-      $match: query,
-    },
-    {
-      $graphLookup: {
-        from: "permissions",
-        startWith: "$name",
-        connectFromField: "module_name",
-        connectToField: "module_name",
-        maxDepth: 1,
-        as: "children",
+      $group: {
+        _id: "$module_name", // Group by `module_name`
+        permissions: {
+          $push: {
+            _id: "$_id",
+            name: "$name",
+            description: "$description"
+          }
+        } // Only include selected fields for each permission
       },
     },
-    // {
-    //   $sort: { module_name: 1 },
-    // },
-  ];
-
-  const data = await permissionModel
-    .aggregate(pipeline)
-    .skip(startIndex)
-    .limit(limit)
-    .exec();
-  console.log("data", data);
-
-  responseBuilder(res, 200, 'Success', data, {
-    totalData: totalData,
-    pageNo: page,
-    limit: limit
-  })
-});
+    {
+      $project: {
+        _id: 0, // Exclude `_id` from the output if not needed
+        module_name: "$_id",
+        permissions: 1,
+      },
+    },
+  ]);
+  responseBuilder(res, 200, 'Success', data)
+})
+//
+// const index = catchAsyncError(async (req, res, next) => {
+//   const page = parseInt(req.query.page) || 1;
+//   console.log("===Filter========req.query.page", req.query.page);
+//   const limit = parseInt(req.query.limit) || 10;
+//   const startIndex = (page - 1) * limit;
+//   const endIndex = page * limit;
+//
+//   let query = filterHelper(req)
+//   let totalData = await permissionModel.countDocuments(query);
+//   console.log("totalData=================================", totalData);
+//
+//   // this query for name with parent list
+//   const pipeline = [
+//     {
+//       $match: query,
+//     },
+//     {
+//       $graphLookup: {
+//         from: "permissions",
+//         startWith: "$name",
+//         connectFromField: "module_name",
+//         connectToField: "module_name",
+//         maxDepth: 1,
+//         as: "children",
+//       },
+//     },
+//     {
+//       $sort: { module_name: 1 },
+//     },
+//   ];
+//
+//   const data = await permissionModel
+//     .aggregate(pipeline)
+//     .skip(startIndex)
+//     .limit(limit)
+//     .exec();
+//   console.log("data", data);
+//
+//   responseBuilder(res, 200, 'Success', data, {
+//     totalData: totalData,
+//     pageNo: page,
+//     limit: limit
+//   })
+// });
 
 const show = catchAsyncError(async (req, res, next) => {
   let data = await permissionModel.findById(req.params.id);
@@ -182,9 +109,7 @@ const store = catchAsyncError(async (req, res, next) => {
 
 const update = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
-  const { name } = req.body;
   let data = await permissionModel.findById(req.params.id);
-  let oldParentName = data.name;
   if (!data) {
     console.log("if");
     return next(new ErrorHandler("No data found", 404));
@@ -201,15 +126,11 @@ const update = catchAsyncError(async (req, res, next) => {
     runValidators: true,
     useFindAndModified: false,
   });
-  const childrenParentUpdate = await permissionModel.updateMany(
-    { module_name: oldParentName },
-    { $set: { module_name: name } }
-  );
+
   res.status(200).json({
     success: true,
     message: "Update successfully",
     data: data,
-    childrenParentUpdate,
   });
 });
 
@@ -234,5 +155,5 @@ module.exports = {
   show,
   store,
   update,
-  remove
+  remove,
 };

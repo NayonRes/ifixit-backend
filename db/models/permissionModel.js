@@ -13,6 +13,10 @@ const permissionSchema = mongoose.Schema({
     // default: 10000,
     required: [true, "Please enter module name"],
   },
+  description: {
+    type: String,
+    required: [true, "Please enter module name"],
+  },
   category_id: {
     type: Array,
   },
@@ -50,6 +54,7 @@ const saveData = async () => {
       const permissionDoc = new permissionModel({
         permission_id: element.permission_id,
         name: element.name,
+        description: element.description,
         module_name: element.module_name,
       });
       await permissionDoc.save();

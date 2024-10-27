@@ -52,6 +52,12 @@ const PermissionData = [
   {name: "customer-update", module_name: "customer", description: "Customer update" },
   {name: "customer-action", module_name: "customer", description: "Customer delete, active, inactive" },
 
+  //----------------Supplier----------------
+  {name: "contact-list", module_name: "contact", description: "Contact list" },
+  {name: "contact-create", module_name: "contact", description: "Contact create" },
+  {name: "contact-update", module_name: "contact", description: "Contact update" },
+  {name: "contact-action", module_name: "contact", description: "Contact delete, active, inactive" },
+
   //----------------Order----------------
   {name: "order-list", module_name: "order", description: "Order list" },
   {name: "order-create", module_name: "order", description: "Order create" },

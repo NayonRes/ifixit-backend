@@ -10,15 +10,11 @@ const permissionSchema = mongoose.Schema({
   },
   module_name: {
     type: String,
-    // default: 10000,
     required: [true, "Please enter module name"],
   },
   description: {
     type: String,
     required: [true, "Please enter module name"],
-  },
-  category_id: {
-    type: Array,
   },
   remarks: {
     type: String,
@@ -27,17 +23,7 @@ const permissionSchema = mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  created_by: {
-    type: String,
-    trim: true,
-    default: "Admin",
-  },
   created_at: { type: Date, default: Date.now },
-  updated_by: {
-    type: String,
-    trim: true,
-    default: "N/A",
-  },
   updated_at: { type: Date, default: Date.now },
 });
 

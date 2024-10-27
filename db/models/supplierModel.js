@@ -10,9 +10,8 @@ const supplierSchema = mongoose.Schema({
   },
   description: {
     type: String,
-    // required: [true, "Please enter the product description"],
-    // trim: true,
-    // maxLength: [3000, "Name can not exceed 3000 character"],
+    trim: true,
+    maxLength: [3000, "Name can not exceed 3000 character"],
   },
   remarks: {
     type: String,

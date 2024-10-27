@@ -1,4 +1,4 @@
-const productModel = require("../db/models/productModel");
+const sparePartsModel = require("../db/models/sparePartsModel");
 const sizeOf = require("image-size");
 const ErrorHandler = require("../utils/errorHandler");
 const imageUpload = require("../utils/imageUpload");
@@ -12,67 +12,44 @@ const index = catchAsyncError(async (req, res, next) => {
   console.log("===========req.query.page", req.query.page);
   const limit = parseInt(req.query.limit) || 10;
   const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
-  const minPrice = req.query.minPrice;
-  const maxPrice = req.query.maxPrice;
-  const startDate = req.query.startDate;
-  const endDate = req.query.endDate;
 
   let query = filterHelper(req)
-  let totalData = await productModel.countDocuments(query);
+  let totalData = await sparePartsModel.countDocuments(query);
   console.log("totalData=================================", totalData);
 
   // -------------------------start-------------------------------------------
-  const data = await productModel.aggregate([
+  const data = await sparePartsModel.aggregate([
     {
       $match: query,
+    },
+    {
+      $addFields: {
+        category_id: { $toObjectId: "$category_id" },
+      },
     },
     {
       $lookup: {
         from: "categories",
         localField: "category_id",
-        foreignField: "category_id",
-        as: "category_data",
+        foreignField: "_id",
+        as: "category",
       },
     },
-    {
-      $lookup: {
-        from: "filters",
-        localField: "filter_id",
-        foreignField: "filter_id",
-        as: "filter_data",
-      },
-    },
-
     {
       $project: {
         _id: 1,
-        product_id: 1,
         name: 1,
         description: 1,
-        price: 1,
-        discount_price: 1,
-        rating: 1,
-        viewed: 1,
-        stock_unit: 1,
-        sku: 1,
         images: 1,
-        filter_id: 1,
-        store_id: 1,
         category_id: 1,
-        location_id: 1,
         status: 1,
         created_by: 1,
         created_at: 1,
         updated_by: 1,
         updated_at: 1,
-        "category_data._id": 1,
-        "category_data.name": 1,
-        "category_data.category_id": 1,
-        "filter_data._id": 1,
-        "filter_data.parent_name": 1,
-        "filter_data.name": 1,
-        "filter_data.filter_id": 1,
+        "category._id": 1,
+        "category.name": 1,
+        "category.category_id": 1
       },
     },
     {
@@ -100,7 +77,7 @@ const index = catchAsyncError(async (req, res, next) => {
 });
 
 const show = catchAsyncError(async (req, res, next) => {
-  let data = await productModel.findById(req.params.id);
+  let data = await sparePartsModel.findById(req.params.id);
   if (!data) {
     return next(new ErrorHandler("No data found", 404));
   }
@@ -120,33 +97,21 @@ const store = catchAsyncError(async (req, res, next) => {
   }
   console.log("imageData", imageData);
 
-  let newIdserial;
-  let newIdNo;
-  let newId;
-  const lastDoc = await productModel.find().sort({ _id: -1 });
-  if (lastDoc.length > 0) {
-    newIdserial = lastDoc[0].product_id.slice(0, 1);
-    newIdNo = parseInt(lastDoc[0].product_id.slice(1)) + 1;
-    newId = newIdserial.concat(newIdNo);
-  } else {
-    newId = "p100";
-  }
   let decodedData = jwt.verify(token, process.env.JWT_SECRET);
   let newData = {
     ...req.body,
     images: imageData,
-    product_id: newId,
     created_by: decodedData?.user?.email,
   };
   console.log("newData", newData);
-  const data = await productModel.create(newData);
+  const data = await sparePartsModel.create(newData);
   res.send({ message: "success", status: 201, data: data });
 });
 
 const update = async (req, res, next) => {
   try {
     const { token } = req.cookies;
-    let data = await productModel.findById(req.params.id);
+    let data = await sparePartsModel.findById(req.params.id);
 
     if (!data) {
       console.log("if");
@@ -178,7 +143,7 @@ const update = async (req, res, next) => {
       updated_at: new Date(),
     };
     console.log("newData", newData);
-    let updateData = await productModel.findByIdAndUpdate(
+    let updateData = await sparePartsModel.findByIdAndUpdate(
       req.params.id,
       newData,
       {
@@ -204,7 +169,7 @@ const patchData = async (req, res, next) => {
 
 const remove = catchAsyncError(async (req, res, next) => {
   console.log("deleteData function is working");
-  let data = await productModel.findById(req.params.id);
+  let data = await sparePartsModel.findById(req.params.id);
   console.log("data", data.images);
   if (!data) {
     console.log("if");

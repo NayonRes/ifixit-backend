@@ -6,6 +6,7 @@ const imageDelete = require("../utils/imageDelete");
 const jwt = require("jsonwebtoken");
 const validationResponseBuilder = require("../builder/validationResponseBuilder");
 const filterHelper = require("../helpers/filterHelper");
+const responseBuilder = require("../builder/responseBuilder");
 
 const index = catchAsyncError(async (req, res, next) => {
   console.log("getDataWithPagination");
@@ -69,14 +70,11 @@ const index = catchAsyncError(async (req, res, next) => {
     { $limit: limit },
   ]);
   console.log("data", data);
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: data,
+  responseBuilder(res, 200, 'Success', data, {
     totalData: totalData,
     pageNo: page,
-    limit: limit,
-  });
+    limit: limit
+  })
 });
 
 const store = catchAsyncError(async (req, res, next) => {

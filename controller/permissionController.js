@@ -2,6 +2,7 @@ const permissionModel = require("../db/models/permissionModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");
+const responseBuilder = require("../builder/responseBuilder");
 
 const getParentDropdown = catchAsyncError(async (req, res, next) => {
   const data = await permissionModel.find({}, "name permission_id").lean();
@@ -140,14 +141,11 @@ const index = catchAsyncError(async (req, res, next) => {
     .exec();
   console.log("data", data);
 
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: data,
+  responseBuilder(res, 200, 'Success', data, {
     totalData: totalData,
     pageNo: page,
-    limit: limit,
-  });
+    limit: limit
+  })
 });
 
 const show = catchAsyncError(async (req, res, next) => {

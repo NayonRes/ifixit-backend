@@ -6,6 +6,7 @@ const imageDelete = require("../utils/imageDelete");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");
 const filterHelper = require("../helpers/filterHelper");
+const responseBuilder = require("../builder/responseBuilder");
 
 const index = catchAsyncError(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
@@ -88,14 +89,11 @@ const index = catchAsyncError(async (req, res, next) => {
   // -------------------------end-------------------------------------------
   // const data = await productModel.find(query).skip(startIndex).limit(limit);
   console.log("data", data);
-  res.status(200).json({
-    success: true,
-    message: "successful",
-    data: data,
+  responseBuilder(res, 200, 'Success', data, {
     totalData: totalData,
     pageNo: page,
-    limit: limit,
-  });
+    limit: limit
+  })
 });
 
 const show = catchAsyncError(async (req, res, next) => {

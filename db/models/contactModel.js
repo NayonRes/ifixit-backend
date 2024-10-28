@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const counterModel = require("./counterModel");
 
 const contactSchema = mongoose.Schema({
   member_id: {
-    type: String,
-    required: [true, "Please enter serviceCustomer name"],
-    trim: true,
-    unique: true,
+    type: Number,
+    unique: true
   },
 
   name: {
@@ -72,6 +71,22 @@ const contactSchema = mongoose.Schema({
   },
 
   updated_at: { type: Date, default: Date.now },
+});
+
+async function getNextMemberId() {
+  const result = await counterModel.findByIdAndUpdate(
+      { _id: 'member_id' },
+      { $inc: { sequenceValue: 1 } },
+      { new: true, upsert: true } // upsert creates the document if it doesn't exist
+  );
+  return result.sequenceValue;
+}
+
+contactSchema.pre('save', async function (next) {
+  if (this.isNew) {
+    this.member_id = await getNextMemberId();
+  }
+  next();
 });
 
 const contactModel = mongoose.model(

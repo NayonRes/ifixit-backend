@@ -75,7 +75,7 @@ const contactSchema = mongoose.Schema({
 
 async function getNextMemberId() {
   const result = await counterModel.findByIdAndUpdate(
-      { _id: 'member_id' },
+      { _id: 'memberId' },
       { $inc: { sequenceValue: 1 } },
       { new: true, upsert: true } // upsert creates the document if it doesn't exist
   );

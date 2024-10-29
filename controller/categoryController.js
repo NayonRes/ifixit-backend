@@ -1,8 +1,8 @@
-const categoryModel = require("../db/models/categoryModel");
+const categoryModel = require("../db/models/category");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");
-const branchModel = require("../db/models/branchModel");
+const branchModel = require("../db/models/branch");
 const responseBuilder = require("../builder/responseBuilder");
 
 const index = catchAsyncError(async (req, res, next) => {

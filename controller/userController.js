@@ -1,4 +1,4 @@
-const userModel = require("../db/models/userModel");
+const userModel = require("../db/models/user");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const imageUpload = require("../utils/imageUpload");

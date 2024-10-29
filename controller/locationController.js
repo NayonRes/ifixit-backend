@@ -1,4 +1,4 @@
-const locationModel = require("../db/models/locationModel");
+const locationModel = require("../db/models/location");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");

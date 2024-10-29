@@ -1,4 +1,4 @@
-const branchModel = require("../db/models/branchModel");
+const branchModel = require("../db/models/branch");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");

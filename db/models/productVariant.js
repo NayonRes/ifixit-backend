@@ -29,6 +29,6 @@ const productVariantSchema = mongoose.Schema({
   updated_at: { type: Date, default: Date.now },
 });
 
-const productVariantModel = mongoose.model("product_variants", productVariantSchema);
+const productVariant = mongoose.model("product_variants", productVariantSchema);
 
-module.exports = productVariantModel;
+module.exports = productVariant;

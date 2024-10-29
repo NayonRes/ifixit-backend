@@ -57,9 +57,9 @@ const customerSchema = mongoose.Schema({
   updated_at: { type: Date, default: Date.now },
 });
 
-const customerModel = mongoose.model(
+const customer = mongoose.model(
   "customers",
     customerSchema
 );
 
-module.exports = customerModel;
+module.exports = customer;

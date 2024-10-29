@@ -1,4 +1,4 @@
-const permissionModel = require("../db/models/permissionModel");
+const permissionModel = require("../db/models/permission");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");

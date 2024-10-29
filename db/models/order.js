@@ -138,6 +138,6 @@ const OrderSchema = new mongoose.Schema({
   updated_at: { type: Date, default: Date.now },
 });
 
-const orderModel = mongoose.model("order", OrderSchema);
+const order = mongoose.model("order", OrderSchema);
 
-module.exports = orderModel;
+module.exports = order;

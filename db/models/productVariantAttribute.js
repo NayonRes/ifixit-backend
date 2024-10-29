@@ -18,6 +18,6 @@ const productVariantAttributeSchema = mongoose.Schema({
   },
 });
 
-const productVariantAttributeModel = mongoose.model("product_variant_attributes", productVariantAttributeSchema);
+const productVariantAttribute = mongoose.model("product_variant_attributes", productVariantAttributeSchema);
 
-module.exports = productVariantAttributeModel;
+module.exports = productVariantAttribute;

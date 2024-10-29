@@ -27,17 +27,17 @@ const permissionSchema = mongoose.Schema({
   updated_at: { type: Date, default: Date.now },
 });
 
-const permissionModel = mongoose.model("permission", permissionSchema);
+const permission = mongoose.model("permission", permissionSchema);
 
 const saveData = async () => {
   // console.log("PermissionData", PermissionData);
-  let totalData = await permissionModel.countDocuments();
+  let totalData = await permission.countDocuments();
   console.log("totalData 123456", totalData);
   if (totalData < 1) {
     for (let index = 0; index < PermissionData.length; index++) {
       const element = PermissionData[index];
 
-      const permissionDoc = new permissionModel({
+      const permissionDoc = new permission({
         permission_id: element.permission_id,
         name: element.name,
         description: element.description,
@@ -49,4 +49,4 @@ const saveData = async () => {
 };
 saveData();
 
-module.exports = permissionModel;
+module.exports = permission;

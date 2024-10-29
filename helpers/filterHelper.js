@@ -28,6 +28,22 @@ const filterHelper = (req) => {
         query.name = new RegExp(`^${req.query.name}$`, "i");
     }
 
+    if (req.query.email) {
+        query.email = new RegExp(`^${req.query.email}$`, "i");
+    }
+
+    if (req.query.mobile) {
+        query.mobile = new RegExp(`^${req.query.mobile}$`, "i");
+    }
+
+    if (req.query.organisation_name) {
+        query.organisation_name = new RegExp(`^${req.query.organisation_name}$`, "i");
+    }
+
+    if (req.query.organisation_email) {
+        query.organisation_email = new RegExp(`^${req.query.organisation_email}$`, "i");
+    }
+
     if (req.query.status) {
         query.status = req.query.status;
     }

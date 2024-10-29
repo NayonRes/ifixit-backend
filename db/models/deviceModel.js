@@ -1,29 +1,16 @@
 const mongoose = require("mongoose");
 
-const serviceSchema = mongoose.Schema({
-  service_id: {
+const deviceSchema = mongoose.Schema({
+  parent_id: {
     type: String,
-    required: [true, "Please enter service id"],
-    unique: true,
+    default: null,
   },
   name: {
     type: String,
-    required: [true, "Please enter service name"],
+    required: [true, "Please enter branch name"],
     trim: true,
     unique: true,
   },
-  description: {
-    type: String,
-    trim: true,
-  },
-  branch_id: {
-    type: String,
-    // required: [true, "Please Enter Branch Id"],
-  },
-  operating_system_type: {
-    type: String,
-  },
-
   remarks: {
     type: String,
   },
@@ -45,20 +32,20 @@ const serviceSchema = mongoose.Schema({
   updated_at: { type: Date, default: Date.now },
 });
 
-const serviceModel = mongoose.model("service", serviceSchema);
+const deviceModel = mongoose.model("device_models", deviceSchema);
 
 const saveData = async () => {
-  let totalData = await serviceModel.countDocuments();
+  let totalData = await branchModel.countDocuments();
   console.log("totalData 123456", totalData);
   if (totalData < 1) {
-    const catDoc = new serviceModel({
-      service_id: "s100",
+    const branchDoc = new branchModel({
+      branch_id: "b100",
       name: "Primary",
       parent_name: "Primary",
     });
-    await catDoc.save();
+    await branchDoc.save();
   }
 };
 saveData();
 
-module.exports = serviceModel;
+module.exports = deviceModel;

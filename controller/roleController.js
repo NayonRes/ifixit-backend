@@ -1,6 +1,6 @@
 const ErrorHander = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
-const roleModel = require("../db/models/roleModel");
+const role = require("../db/models/role");
 const jwt = require("jsonwebtoken");
 const responseBuilder = require("../builder/responseBuilder");
 

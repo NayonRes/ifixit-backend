@@ -1,5 +1,5 @@
 const { check, validationResult } = require('express-validator');
-const branchModel = require("../db/models/branchModel");
+const branchModel = require("../db/models/branch");
 const validationHandler = require("../builder/validationHandler");
 
 const storeUserRule = [

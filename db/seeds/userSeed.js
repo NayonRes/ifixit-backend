@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const User = require('../models/userModel');  // Path to your User model
-const Permission = require('../models/permissionModel');  // Path to your Permission model
+const User = require('../models/user');  // Path to your User model
+const Permission = require('../models/permission');  // Path to your Permission model
 
 // Seed Data function
 async function userSeed() {

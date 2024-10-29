@@ -1,4 +1,4 @@
-const sparePartsModel = require("../db/models/sparePartsModel");
+const sparePartsModel = require("../db/models/spareParts");
 const sizeOf = require("image-size");
 const ErrorHandler = require("../utils/errorHandler");
 const imageUpload = require("../utils/imageUpload");

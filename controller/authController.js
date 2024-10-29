@@ -1,5 +1,5 @@
-const userModel = require("../db/models/userModel");
-const roleModel = require("../db/models/roleModel");
+const userModel = require("../db/models/user");
+const role = require("../db/models/role");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const imageUpload = require("../utils/imageUpload");

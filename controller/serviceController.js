@@ -1,4 +1,4 @@
-const serviceModel = require("../db/models/serviceModel");
+const serviceModel = require("../db/models/service");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");

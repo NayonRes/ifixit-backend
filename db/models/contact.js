@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const counterModel = require("./counterModel");
+const counterModel = require("./counter");
 
 const contactSchema = mongoose.Schema({
   member_id: {
@@ -88,9 +88,9 @@ contactSchema.pre('save', async function (next) {
   next();
 });
 
-const contactModel = mongoose.model(
+const contact = mongoose.model(
   "contacts",
     contactSchema
 );
 
-module.exports = contactModel;
+module.exports = contact;

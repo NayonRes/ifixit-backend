@@ -1,4 +1,4 @@
-const contactModel = require("../db/models/contactModel");
+const contactModel = require("../db/models/contact");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");

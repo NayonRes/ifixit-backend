@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
-const categorySchema = mongoose.Schema({
+const locationSchema = mongoose.Schema({
   parent_id: {
     type: String,
-    default: null
+    required: [false, "Please enter location id"],
   },
   name: {
     type: String,
@@ -13,6 +13,7 @@ const categorySchema = mongoose.Schema({
   },
   remarks: {
     type: String,
+    trim: true
   },
   status: {
     type: Boolean,
@@ -31,19 +32,20 @@ const categorySchema = mongoose.Schema({
   },
   updated_at: { type: Date, default: Date.now },
 });
- 
-const categoryModel = mongoose.model("category", categorySchema);
+
+const location = mongoose.model("location", locationSchema);
 
 const saveData = async () => {
-  let totalData = await categoryModel.countDocuments();
+  let totalData = await location.countDocuments();
   console.log("totalData 123456", totalData);
   if (totalData < 1) {
-    const catDoc = new categoryModel({
+    const locDoc = new location({
       name: "Primary",
+      remarks: "Primary",
     });
-    await catDoc.save();
+    await locDoc.save();
   }
 };
 saveData();
 
-module.exports = categoryModel;
+module.exports = location;

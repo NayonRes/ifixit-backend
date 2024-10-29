@@ -20,6 +20,6 @@ const stockSchema = mongoose.Schema({
   updated_at: { type: Date, default: Date.now },
 });
 
-const stockModel = mongoose.model("stocks", stockSchema);
+const stock = mongoose.model("stocks", stockSchema);
 
-module.exports = stockModel;
+module.exports = stock;

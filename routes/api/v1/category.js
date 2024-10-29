@@ -9,7 +9,7 @@ const {
     dropdownChild
 } = require("../../../controller/categoryController");
 const {isAuthenticatedUser, hasPermission} = require("../../../middleware/auth");
-const categoryModel = require("../../../db/models/categoryModel");
+const categoryModel = require("../../../db/models/category");
 
 const router = express.Router();
 

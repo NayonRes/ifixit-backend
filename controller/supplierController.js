@@ -1,4 +1,4 @@
-const supplierModel = require("../db/models/supplierModel");
+const supplierModel = require("../db/models/supplier");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");

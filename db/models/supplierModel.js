@@ -18,8 +18,7 @@ const supplierSchema = mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, "Please Enter Your Email"],
-    validate: [validator.isEmail, "Please Enter a valid Email"],
+    default: null
   },
   organisation_name: {
     type: String,

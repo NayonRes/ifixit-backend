@@ -4,7 +4,7 @@ const counterModel = require("./counterModel");
 
 const contactSchema = mongoose.Schema({
   member_id: {
-    type: Number,
+    type: String,
     unique: true
   },
 
@@ -84,7 +84,7 @@ async function getNextMemberId() {
 
 contactSchema.pre('save', async function (next) {
   if (this.isNew) {
-    this.member_id = await getNextMemberId();
+    // this.member_id = await getNextMemberId();
   }
   next();
 });

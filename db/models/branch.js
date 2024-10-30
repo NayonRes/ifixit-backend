@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const branchSchema = mongoose.Schema({
-  parent_id: {
-    type: String,
-    default: null,
-  },
   name: {
     type: String,
     required: [true, "Please enter branch name"],
@@ -39,9 +35,7 @@ const saveData = async () => {
   console.log("totalData 123456", totalData);
   if (totalData < 1) {
     const branchDoc = new branch({
-      branch_id: "b100",
       name: "Primary",
-      parent_name: "Primary",
     });
     await branchDoc.save();
   }

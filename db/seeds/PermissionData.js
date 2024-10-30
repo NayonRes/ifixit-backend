@@ -89,10 +89,10 @@ const PermissionData = [
   {name: "brand-action", module_name: "brand", description: "Brand delete, active, inactive" },
 
   //----------------Model----------------
-  {name: "device-model-list", module_name: "device-model", description: "Device model list" },
-  {name: "device-model-create", module_name: "device-model", description: "Device model create" },
-  {name: "device-model-update", module_name: "device-model", description: "Device model update" },
-  {name: "device-model-action", module_name: "device-model", description: "Device model delete, active, inactive" },
+  {name: "model-list", module_name: "model", description: "Model list" },
+  {name: "model-create", module_name: "model", description: "Model create" },
+  {name: "model-update", module_name: "model", description: "Model update" },
+  {name: "model-action", module_name: "model", description: "Model delete, active, inactive" },
 ];
 
 module.exports = PermissionData;

@@ -11,16 +11,16 @@ const {isAuthenticatedUser, hasPermission} = require("../../../middleware/auth")
 
 let router = express.Router();
 
-router.route("/model")
-    .get(isAuthenticatedUser, hasPermission('model-list'), index)
-    .post(isAuthenticatedUser, hasPermission('model-create'), store);
+router.route("/device")
+    .get(isAuthenticatedUser, hasPermission('device-list'), index)
+    .post(isAuthenticatedUser, hasPermission('device-create'), store);
 
-router.route("/model/dropdown")
+router.route("/device/dropdown")
     .get(isAuthenticatedUser, dropdown);
 
-router.route("/model/:id")
-    .get(isAuthenticatedUser, hasPermission('model-show'), show)
-    .put(isAuthenticatedUser, hasPermission('model-update'), update)
-    .delete(isAuthenticatedUser, hasPermission('model-action'), remove);
+router.route("/device/:id")
+    .get(isAuthenticatedUser, hasPermission('device-show'), show)
+    .put(isAuthenticatedUser, hasPermission('device-update'), update)
+    .delete(isAuthenticatedUser, hasPermission('device-action'), remove);
 
 module.exports = router;

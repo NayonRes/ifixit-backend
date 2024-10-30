@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const deviceSchema = mongoose.Schema({
-  parent_id: {
-    type: String,
-    default: null,
-  },
   name: {
     type: String,
     required: [true, "Please enter branch name"],
@@ -13,6 +9,7 @@ const deviceSchema = mongoose.Schema({
   },
   remarks: {
     type: String,
+    default: null
   },
   status: {
     type: Boolean,
@@ -36,12 +33,10 @@ const device = mongoose.model("devices", deviceSchema);
 
 const saveData = async () => {
   let totalData = await device.countDocuments();
-  console.log("totalData 123456", totalData);
+  console.log("totalData: ", totalData);
   if (totalData < 1) {
     const branchDoc = new device({
-      branch_id: "b100",
       name: "Primary",
-      parent_name: "Primary",
     });
     await branchDoc.save();
   }

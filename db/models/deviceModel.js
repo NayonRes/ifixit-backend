@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const deviceSchema = mongoose.Schema({
-  parent_id: {
+  device_id: {
     type: String,
     default: null,
   },
@@ -33,19 +33,5 @@ const deviceSchema = mongoose.Schema({
 });
 
 const deviceModel = mongoose.model("device_models", deviceSchema);
-
-const saveData = async () => {
-  let totalData = await branchModel.countDocuments();
-  console.log("totalData 123456", totalData);
-  if (totalData < 1) {
-    const branchDoc = new branchModel({
-      branch_id: "b100",
-      name: "Primary",
-      parent_name: "Primary",
-    });
-    await branchDoc.save();
-  }
-};
-saveData();
 
 module.exports = deviceModel;

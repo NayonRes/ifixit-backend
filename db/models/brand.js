@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const brandSchema = mongoose.Schema({
-  parent_id: {
-    type: String,
-    default: null,
-  },
   name: {
     type: String,
     required: [true, "Please enter branch name"],
@@ -13,6 +9,7 @@ const brandSchema = mongoose.Schema({
   },
   remarks: {
     type: String,
+    default: null
   },
   status: {
     type: Boolean,
@@ -36,12 +33,10 @@ const brand = mongoose.model("brands", brandSchema);
 
 const saveData = async () => {
   let totalData = await brand.countDocuments();
-  console.log("totalData 123456", totalData);
+  console.log("totalData: ", totalData);
   if (totalData < 1) {
     const branchDoc = new brand({
-      branch_id: "b100",
-      name: "Primary",
-      parent_name: "Primary",
+      name: "Primary"
     });
     await branchDoc.save();
   }

@@ -75,6 +75,24 @@ const PermissionData = [
   {name: "supplier-create", module_name: "supplier", description: "Supplier create" },
   {name: "supplier-update", module_name: "supplier", description: "Supplier update" },
   {name: "supplier-action", module_name: "supplier", description: "Supplier delete, active, inactive" },
+
+  //----------------Device----------------
+  {name: "device-list", module_name: "device", description: "Device list" },
+  {name: "device-create", module_name: "device", description: "Device create" },
+  {name: "device-update", module_name: "device", description: "Device update" },
+  {name: "device-action", module_name: "device", description: "Device delete, active, inactive" },
+
+  //----------------Brand----------------
+  {name: "brand-list", module_name: "brand", description: "Brand list" },
+  {name: "brand-create", module_name: "brand", description: "Brand create" },
+  {name: "brand-update", module_name: "brand", description: "Brand update" },
+  {name: "brand-action", module_name: "brand", description: "Brand delete, active, inactive" },
+
+  //----------------Model----------------
+  {name: "device-model-list", module_name: "device-model", description: "Device model list" },
+  {name: "device-model-create", module_name: "device-model", description: "Device model create" },
+  {name: "device-model-update", module_name: "device-model", description: "Device model update" },
+  {name: "device-model-action", module_name: "device-model", description: "Device model delete, active, inactive" },
 ];
 
 module.exports = PermissionData;

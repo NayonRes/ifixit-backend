@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const PermissionData = require("../../initial-data/PermissionData");
+const PermissionData = require("../seeds/PermissionData");
 
 const permissionSchema = mongoose.Schema({
   name: {

@@ -25,7 +25,13 @@ const index = catchAsyncError(async (req, res, next) => {
       $project: {
         _id: 1,
         name: 1,
+        email: 1,
+        mobile: 1,
+        address: 1,
+        organization_name: 1,
+        organization_address: 1,
         description: 1,
+        remarks: 1,
         status: 1,
         created_by: 1,
         created_at: 1,

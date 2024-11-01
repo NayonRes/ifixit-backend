@@ -35,7 +35,7 @@ const saveData = async () => {
   console.log("totalData 123456", totalData);
   if (totalData < 1) {
     const branchDoc = new branch({
-      name: "Primary",
+      name: "Main branch",
     });
     await branchDoc.save();
   }

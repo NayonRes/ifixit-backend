@@ -34,7 +34,7 @@ const show = catchAsyncError(async (req, res, next) => {
 const store = catchAsyncError(async (req, res, next) => {
     let newData = {
         ...req.body,
-        created_by: decodedData?.user?.email,
+        // created_by: decodedData?.user?.email,
     };
 
     const data = await brandModel.create(newData);

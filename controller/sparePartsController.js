@@ -124,7 +124,7 @@ const store = catchAsyncError(async (req, res, next) => {
   const { token } = req.cookies;
   let imageData = [];
   if (req.files) {
-    imageData = await imageUpload(req.files.images, "products", next);
+    imageData = await imageUpload(req.files.images, "spare_parts", next);
   }
   console.log("imageData", imageData);
 

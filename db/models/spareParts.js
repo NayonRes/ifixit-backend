@@ -5,6 +5,18 @@ const sparePartsSchema = mongoose.Schema({
     type: String,
     required: [true, "Please enter the product category"],
   },
+  brand_id: {
+    type: String,
+    required: [true, "Please enter the product brand"],
+  },
+  device_id: {
+    type: String,
+    required: [true, "Please enter the product device type"],
+  },
+  model_id: {
+    type: String,
+    required: [true, "Please enter the product model"],
+  },
   name: {
     type: String,
     required: [true, "Please enter the product name"],

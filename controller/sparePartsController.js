@@ -26,6 +26,9 @@ const index = catchAsyncError(async (req, res, next) => {
     {
       $addFields: {
         category_id: { $toObjectId: "$category_id" },
+        brand_id: { $toObjectId: "$brand_id" },
+        device_id: { $toObjectId: "$device_id" },
+        model_id: { $toObjectId: "$model_id" },
       },
     },
     {
@@ -34,6 +37,30 @@ const index = catchAsyncError(async (req, res, next) => {
         localField: "category_id",
         foreignField: "_id",
         as: "category",
+      },
+    },
+    {
+      $lookup: {
+        from: "devices",
+        localField: "device_id",
+        foreignField: "_id",
+        as: "device",
+      },
+    },
+    {
+      $lookup: {
+        from: "brands",
+        localField: "brand_id",
+        foreignField: "_id",
+        as: "brand",
+      },
+    },
+    {
+      $lookup: {
+        from: "device_models",
+        localField: "model_id",
+        foreignField: "_id",
+        as: "model",
       },
     },
     {
@@ -50,7 +77,13 @@ const index = catchAsyncError(async (req, res, next) => {
         updated_at: 1,
         "category._id": 1,
         "category.name": 1,
-        "category.category_id": 1
+        "category.category_id": 1,
+        "brand._id": 1,
+        "brand.name": 1,
+        "device._id": 1,
+        "device.name": 1,
+        "model._id": 1,
+        "model.name": 1,
       },
     },
     {

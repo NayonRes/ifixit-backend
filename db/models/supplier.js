@@ -6,7 +6,6 @@ const supplierSchema = mongoose.Schema({
     type: String,
     required: [true, "Please enter the product name"],
     trim: true,
-    unique: true,
     maxLength: [60, "Name can not exceed 60 character"],
   },
   mobile: {

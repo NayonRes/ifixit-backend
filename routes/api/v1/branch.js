@@ -6,21 +6,21 @@ const {
     update,
     remove,
     dropdown
-} = require("../../../controller/brandController");
+} = require("../../../controller/branchController");
 const {isAuthenticatedUser, hasPermission} = require("../../../middleware/auth");
 
 let router = express.Router();
 
-router.route("/brand")
-    .get(isAuthenticatedUser, hasPermission('brand-list'), index)
-    .post(isAuthenticatedUser, hasPermission('brand-create'), store);
+router.route("/branch")
+    .get(isAuthenticatedUser, hasPermission('branch-list'), index)
+    .post(isAuthenticatedUser, hasPermission('branch-create'), store);
 
-router.route("/brand/dropdown")
+router.route("/branch/dropdown")
     .get(isAuthenticatedUser, dropdown);
 
-router.route("/brand/:id")
-    .get(isAuthenticatedUser, hasPermission('brand-show'), show)
-    .put(isAuthenticatedUser, hasPermission('brand-update'), update)
-    .delete(isAuthenticatedUser, hasPermission('brand-action'), remove);
+router.route("/branch/:id")
+    .get(isAuthenticatedUser, hasPermission('branch-show'), show)
+    .put(isAuthenticatedUser, hasPermission('branch-update'), update)
+    .delete(isAuthenticatedUser, hasPermission('branch-action'), remove);
 
 module.exports = router;

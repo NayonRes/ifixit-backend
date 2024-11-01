@@ -20,7 +20,7 @@ router.route("/device/model/dropdown")
 
 router.route("/device/model/:id")
     .get(isAuthenticatedUser, hasPermission('model-show'), show)
-    .put(isAuthenticatedUser, hasPermission('device-model-update'), update)
+    .put(isAuthenticatedUser, hasPermission('model-update'), update)
     .delete(isAuthenticatedUser, hasPermission('model-action'), remove);
 
 module.exports = router;

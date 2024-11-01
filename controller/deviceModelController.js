@@ -1,4 +1,4 @@
-const modelOfDevice = require("../db/models/branch");
+const modelOfDevice = require("../db/models/deviceModel");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");

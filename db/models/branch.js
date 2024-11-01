@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const branchSchema = mongoose.Schema({
+  parent_id: {
+    type: String,
+    default: null
+  },
   name: {
     type: String,
     required: [true, "Please enter branch name"],

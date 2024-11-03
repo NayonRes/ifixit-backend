@@ -32,7 +32,7 @@ const branchSchema = mongoose.Schema({
   updated_at: { type: Date, default: Date.now },
 });
 
-const branch = mongoose.model("branch", branchSchema);
+const branch = mongoose.model("branches", branchSchema);
 
 const saveData = async () => {
   let totalData = await branch.countDocuments();

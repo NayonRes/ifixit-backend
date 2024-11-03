@@ -26,9 +26,21 @@ const index = catchAsyncError(async (req, res, next) => {
     {
       $addFields: {
         category_id: { $toObjectId: "$category_id" },
-        brand_id: { $toObjectId: "$brand_id" },
-        device_id: { $toObjectId: "$device_id" },
-        model_id: { $toObjectId: "$model_id" },
+      },
+    },
+    {
+      $addFields: {
+        brand_id: { $toObjectId: "$brand_id" }
+      },
+    },
+    {
+      $addFields: {
+        branch_id: { $toObjectId: "$branch_id" }
+      },
+    },
+    {
+      $addFields: {
+        device_id: { $toObjectId: "$device_id" }
       },
     },
     {

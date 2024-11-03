@@ -6,7 +6,7 @@ const {
     update,
     remove,
     dropdown
-} = require("../../../controller/deviceModelController");
+} = require("../../../controller/deviceController");
 const {isAuthenticatedUser, hasPermission} = require("../../../middleware/auth");
 
 let router = express.Router();

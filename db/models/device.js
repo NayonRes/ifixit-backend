@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const deviceSchema = mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Please enter branch name"],
+    required: [true, "Please enter device name"],
     trim: true,
     unique: true,
   },
@@ -36,7 +36,7 @@ const saveData = async () => {
   console.log("totalData: ", totalData);
   if (totalData < 1) {
     const branchDoc = new device({
-      name: "Primary",
+      name: "Display",
     });
     await branchDoc.save();
   }

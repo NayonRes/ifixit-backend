@@ -30,6 +30,14 @@ const sparePartsSchema = mongoose.Schema({
     maxLength: [3000, "Name can not exceed 3000 character"],
   },
 
+  warranty: {
+    type: String,
+    required: [true, "Please enter the product warranty"],
+    trim: true,
+    maxLength: [60, "Name can not exceed 60 character"],
+    default: null
+  },
+
   images: [
     {
       public_id: {

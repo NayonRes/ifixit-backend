@@ -6,6 +6,10 @@ const productSchema = mongoose.Schema({
     required: [true, "Please enter product id"],
     unique: true,
   },
+  product_type: {
+    type: String,
+    default: "product"
+  },
   name: {
     type: String,
     // required: [true, "Please enter the product name"],
@@ -120,4 +124,4 @@ const productSchema = mongoose.Schema({
   updated_at: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("product", productSchema);
+module.exports = mongoose.model("products", productSchema);

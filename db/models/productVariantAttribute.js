@@ -6,9 +6,14 @@ const productVariantAttributeSchema = mongoose.Schema({
     index: true,
     required: [true, "Please enter spare parts id"],
   },
+  product_variant_id: {
+    type: String,
+    index: true,
+    required: [true, "Please enter spare parts id"],
+  },
   key: {
     type: String,
-    required: [false, "Please enter SKU"],
+    required: [false, "Please enter Attribute Key"],
     index: true,
     trim: true
   },

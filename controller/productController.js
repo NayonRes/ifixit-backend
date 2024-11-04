@@ -109,7 +109,7 @@ const show = catchAsyncError(async (req, res, next) => {
 });
 const store = catchAsyncError(async (req, res, next) => {
   console.log("req.files", req.files);
-  console.log("req.body", req.body);
+  console.log("req.body", req.body.variants[0].attributes);
   const { token } = req.cookies;
   let imageData = [];
   if (req.files) {

@@ -117,22 +117,10 @@ const store = catchAsyncError(async (req, res, next) => {
   }
   console.log("imageData", imageData);
 
-  let newIdserial;
-  let newIdNo;
-  let newId;
-  const lastDoc = await productModel.find().sort({ _id: -1 });
-  if (lastDoc.length > 0) {
-    newIdserial = lastDoc[0].product_id.slice(0, 1);
-    newIdNo = parseInt(lastDoc[0].product_id.slice(1)) + 1;
-    newId = newIdserial.concat(newIdNo);
-  } else {
-    newId = "p100";
-  }
   let decodedData = jwt.verify(token, process.env.JWT_SECRET);
   let newData = {
     ...req.body,
     images: imageData,
-    product_id: newId,
     created_by: decodedData?.user?.email,
   };
   console.log("newData", newData);

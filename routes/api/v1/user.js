@@ -1,15 +1,16 @@
 const express = require("express");
 const {
-  index,
-  show,
-  store,
-  update,
-  remove,
-  assignPermission
+    index,
+    show,
+    store,
+    update,
+    remove,
+    dropdown,
+    assignPermission
 } = require("../../../controller/userController");
 
 const router = express.Router();
-const { isAuthenticatedUser, hasPermission } = require("../../../middleware/auth");
+const {isAuthenticatedUser, hasPermission} = require("../../../middleware/auth");
 const storeUserRule = require('../../../rules/storeUserRule')
 const updateUserRule = require("../../../rules/updateUserRule");
 
@@ -21,6 +22,9 @@ router.route("/user")
         storeUserRule,
         store
     );
+
+router.route("/user/dropdown")
+    .get(isAuthenticatedUser, dropdown);
 
 router.route("/user/:id")
     .get(isAuthenticatedUser, hasPermission('user-show'), show)

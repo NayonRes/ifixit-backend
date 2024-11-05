@@ -246,11 +246,54 @@ const assignPermission = catchAsyncError(async (req, res, next) => {
   }
 });
 
+
+const dropdown = catchAsyncError(async (req, res, next) => {
+  try {
+    console.log(req)
+    // Fetch only the required fields
+    const data = await userModel.aggregate([
+      {
+        $lookup: {
+          from: "branches", // The name of the Role model collection in your database
+          localField: "branch_id", // Field in userModel that holds the role ID
+          foreignField: "branch_id", // Field in roleModel that the role ID refers to
+          as: "branch", // The name of the field to add the result to
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          designation: 1,
+          status: 1,
+          "branch.name": 1
+        },
+      },
+    ]);
+    console.log(data)
+
+    // Return successful response
+    res.status(200).json({
+      success: true,
+      message: "Data fetched successfully",
+      data,
+    });
+  } catch (error) {
+    console.error("Error fetching locations:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = {
   index,
   show,
   store,
   update,
   remove,
+  dropdown,
   assignPermission
 };

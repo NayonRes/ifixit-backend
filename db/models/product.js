@@ -58,9 +58,10 @@ const productSchema = mongoose.Schema({
   },
   sku: {
     type: String,
-    required: [true, "Please enter the product name"],
+    required: [false, "Please enter the product name"],
     trim: true,
     maxLength: [20, "Name can not exceed 20 character"],
+    default: null
   },
   images: [
     {

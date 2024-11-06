@@ -7,6 +7,7 @@ const catchAsyncError = require("../middleware/catchAsyncError");
 const jwt = require("jsonwebtoken");
 const filterHelper = require("../helpers/filterHelper");
 const responseBuilder = require("../builder/responseBuilder");
+const {counters} = require("sharp");
 
 const index = catchAsyncError(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
@@ -109,23 +110,29 @@ const show = catchAsyncError(async (req, res, next) => {
 });
 const store = catchAsyncError(async (req, res, next) => {
   console.log("req.files", req.files);
-  console.log("req.body", req.body.variants[0].attributes);
+  // console.log("req.body", req.body.variants[0].attributes);
   const { token } = req.cookies;
   let imageData = [];
-  if (req.files) {
-    imageData = await imageUpload(req.files.images, "products", next);
-  }
-  console.log("imageData", imageData);
+  // if (req.files) {
+  //   imageData = await imageUpload(req.files.images, "products", next);
+  // }
+  // console.log("imageData", imageData);
 
   let decodedData = jwt.verify(token, process.env.JWT_SECRET);
   let newData = {
     ...req.body,
-    images: imageData,
+    // images: imageData,
     created_by: decodedData?.user?.email,
   };
   console.log("newData", newData);
-  const data = await productModel.create(newData);
-  res.send({ message: "success", status: 201, data: data });
+  const product = await productModel.create(newData);
+  if (product && newData.variants && newData.variants.length > 0) {
+    console.log(newData.variants)
+    await Promise.all(
+        newData.variants.map((variant) => product.attachVariant(variant))
+    );
+  }
+  res.send({ message: "success", status: 201, data: product });
 });
 
 const update = async (req, res, next) => {

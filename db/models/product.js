@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const productVariant = require("./productVariant");
 
 const productSchema = mongoose.Schema({
   category_id: {
@@ -57,7 +58,7 @@ const productSchema = mongoose.Schema({
   },
   sku: {
     type: String,
-    // required: [true, "Please enter the product name"],
+    required: [true, "Please enter the product name"],
     trim: true,
     maxLength: [20, "Name can not exceed 20 character"],
   },
@@ -95,5 +96,11 @@ const productSchema = mongoose.Schema({
   },
   updated_at: { type: Date, default: Date.now },
 });
+
+productSchema.methods.attachVariant = async function(variantData) {
+  console.log(variantData)
+  const variant = new productVariant({ ...variantData, product_id: this._id });
+  await variant.save();
+};
 
 module.exports = mongoose.model("products", productSchema);

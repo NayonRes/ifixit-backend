@@ -6,24 +6,29 @@ const productVariantSchema = mongoose.Schema({
     index: true,
     required: [true, "Please enter spare parts id"],
   },
-  sku: {
+  type: {
     type: String,
-    required: [false, "Please enter SKU"],
+    required: [true, "Please enter Type"],
+    index: true,
+    trim: true
+  },
+  value: {
+    type: String,
+    required: [true, "Please enter Value"],
+    index: true,
+    trim: true
+  },
+  price: {
+    type: Number,
+    required: [true, "Please enter price"],
     index: true,
     trim: true,
-    unique: true
-  },
-  purchase_price: {
-    type: Number,
     default: 0
   },
-  selling_price: {
-    type: Number,
-    default: 0
-  },
-  strike_price: {
-    type: Number,
-    default: 0
+  attributes: {
+    type: Array,
+    required: [false, "You may add some attributes"],
+    default: []
   },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },

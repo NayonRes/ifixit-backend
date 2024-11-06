@@ -93,6 +93,12 @@ const PermissionData = [
   {name: "model-create", module_name: "model", description: "Model create" },
   {name: "model-update", module_name: "model", description: "Model update" },
   {name: "model-action", module_name: "model", description: "Model delete, active, inactive" },
+
+  //----------------Variants----------------
+  {name: "variant-list", module_name: "variant", description: "Variant list" },
+  {name: "variant-create", module_name: "variant", description: "Variant create" },
+  {name: "variant-update", module_name: "variant", description: "Variant update" },
+  {name: "variant-action", module_name: "variant", description: "Variant delete, active, inactive" },
 ];
 
 module.exports = PermissionData;

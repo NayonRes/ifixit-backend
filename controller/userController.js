@@ -253,16 +253,22 @@ const dropdown = catchAsyncError(async (req, res, next) => {
     // Fetch only the required fields
     const data = await userModel.aggregate([
       {
+        $addFields: {
+          branch_id: { $toObjectId: "$branch_id" },
+        },
+      },
+      {
         $lookup: {
           from: "branches", // The name of the Role model collection in your database
           localField: "branch_id", // Field in userModel that holds the role ID
-          foreignField: "branch_id", // Field in roleModel that the role ID refers to
+          foreignField: "_id", // Field in roleModel that the role ID refers to
           as: "branch", // The name of the field to add the result to
         },
       },
       {
         $project: {
           _id: 1,
+          branch_id: 1,
           name: 1,
           designation: 1,
           status: 1,
